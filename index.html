@@ -1,0 +1,1677 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>交我食 · SJTU 智慧食堂</title>
+<style>
+  :root{
+    --red:#c8102e; --red-deep:#8f0b1f; --red-soft:rgba(200,16,46,.10);
+    --paper:#fbf8f4; --ink:#1a1a1e; --muted:#6f6a66; --dim:#9c948d;
+    --card:#ffffff; --warm:#f4ece3;
+    --line:rgba(26,26,30,.10); --line-2:rgba(26,26,30,.18);
+    --serif:"Songti SC","STSong","SimSun","Noto Serif SC",serif;
+    --sans:"PingFang SC","Microsoft YaHei","Hiragino Sans GB",-apple-system,system-ui,sans-serif;
+    --shadow:0 22px 50px -30px rgba(26,26,30,.35), 0 2px 6px rgba(26,26,30,.04);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:var(--sans); color:var(--ink); background:var(--paper);
+    -webkit-font-smoothing:antialiased; min-height:100vh;
+    background-image:radial-gradient(rgba(26,26,30,.028) 1px, transparent 1px);
+    background-size:5px 5px;
+  }
+  .ink-serif{font-family:var(--serif); letter-spacing:.02em}
+  .wrap{max-width:1200px;margin:0 auto;padding:0 26px 0}
+
+  /* ---------- header ---------- */
+  .hdr{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+    padding:22px 0 18px;border-bottom:1px solid var(--line)}
+  .brand{display:flex;align-items:center;gap:13px}
+  .seal{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;color:#fff;
+    background:var(--red);font-family:var(--serif);font-size:20px;font-weight:700;
+    box-shadow:0 6px 16px -6px rgba(200,16,46,.6)}
+  .bt h1{margin:0;font-family:var(--serif);font-size:21px;font-weight:700;letter-spacing:.18em}
+  .bt p{margin:4px 0 0;font-size:9.5px;color:var(--dim);letter-spacing:.28em;text-transform:uppercase}
+  .hdr-right{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+  .clk{text-align:right;line-height:1.2}
+  .clk b{font-size:20px;font-weight:600;font-variant-numeric:tabular-nums;letter-spacing:.04em}
+  .clk span{display:block;font-size:10.5px;color:var(--muted);margin-top:2px}
+  .live{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--muted)}
+  .live i{width:5px;height:5px;border-radius:50%;background:#2e9e6b}
+  .live.off i{background:#c58a2a}
+
+  /* ---------- hero ---------- */
+  .hero{position:relative;display:grid;grid-template-columns:1.06fr .94fr;gap:40px;
+    padding:54px 0 30px;align-items:center}
+  .hero::before{content:"";position:absolute;right:-120px;top:-40px;width:520px;height:520px;
+    border-radius:50%;background:radial-gradient(circle, rgba(200,16,46,.075), transparent 66%);
+    pointer-events:none}
+  .eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:10.5px;letter-spacing:.22em;
+    color:var(--red);text-transform:uppercase}
+  .eyebrow::before{content:"";width:26px;height:1px;background:var(--red)}
+  .hero h2{margin:18px 0 0;font-family:var(--serif);font-size:52px;line-height:1.16;font-weight:700;letter-spacing:.02em}
+  .hero h2 em{font-style:normal;color:var(--red);position:relative}
+  .hero h2 em::after{content:"";position:absolute;left:0;right:0;bottom:6px;height:8px;
+    background:var(--red-soft);z-index:-1}
+  .hero-source{margin:16px 0 0;font-size:11.5px;color:var(--dim);letter-spacing:.1em;font-family:var(--serif)}
+  .lead{margin:20px 0 0;font-size:14.5px;line-height:1.9;color:var(--muted);max-width:30em}
+  .lead b{color:var(--ink);font-weight:600}
+  .hero-stats{display:flex;gap:34px;margin:26px 0 0;flex-wrap:wrap}
+  .hero-stats div span{display:block;font-size:10.5px;color:var(--dim);letter-spacing:.12em;margin-bottom:6px}
+  .hero-stats div b{font-size:23px;font-weight:600;font-variant-numeric:tabular-nums}
+  .hero-stats div b small{font-size:11px;color:var(--muted);font-weight:400;margin-left:3px}
+  .hero-cta{display:flex;gap:12px;margin-top:30px;flex-wrap:wrap}
+  .btn-solid{font:inherit;font-size:13.5px;font-weight:600;color:#fff;background:var(--red);
+    border:1px solid var(--red);border-radius:999px;padding:13px 26px;cursor:pointer;transition:.18s;
+    box-shadow:0 10px 24px -12px rgba(200,16,46,.8)}
+  .btn-solid:hover{background:var(--red-deep);border-color:var(--red-deep)}
+  .btn-line{font:inherit;font-size:13.5px;color:var(--ink);background:transparent;
+    border:1px solid var(--line-2);border-radius:999px;padding:13px 22px;cursor:pointer;transition:.18s}
+  .btn-line:hover{border-color:var(--ink)}
+
+  /* 此刻最佳 悬浮卡 */
+  .pick{position:relative;background:var(--card);border:1px solid var(--line);border-radius:26px;
+    padding:26px 26px 22px;box-shadow:var(--shadow)}
+  .pick::before{content:"";position:absolute;left:0;top:22px;bottom:22px;width:3px;border-radius:3px;background:var(--red)}
+  .pick-flag{position:absolute;top:-12px;right:22px;background:var(--red);color:#fff;
+    font-size:10.5px;letter-spacing:.16em;padding:6px 12px;border-radius:999px;
+    box-shadow:0 8px 18px -8px rgba(200,16,46,.9)}
+  .pick-top{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+  .pick-name{font-family:var(--serif);font-size:34px;font-weight:700;letter-spacing:.04em}
+  .pick-full{font-size:11.5px;color:var(--dim);margin-top:6px}
+  .pick-sub{font-size:10.5px;color:var(--dim);letter-spacing:.1em}
+  .pick-mid{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:20px 0 0}
+  .pick-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px 16px;flex:1}
+  .pick-stats div{display:flex;align-items:baseline;gap:6px}
+  .pick-stats span{font-size:11px;color:var(--dim);min-width:40px}
+  .pick-stats b{font-size:17px;font-weight:600;font-variant-numeric:tabular-nums}
+  .pick-stats b small{font-size:10.5px;color:var(--muted);font-weight:400;margin-left:2px}
+  .ring{position:relative;width:92px;height:92px;flex:0 0 auto}
+  .ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+  .ring-track{fill:none;stroke:rgba(26,26,30,.08);stroke-width:7}
+  .ring-bar{fill:none;stroke:var(--red);stroke-width:7;stroke-linecap:round;stroke-dasharray:0 400;transition:stroke-dasharray .8s ease}
+  .ring-in{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
+  .ring-in b{font-size:23px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1}
+  .ring-in span{display:block;font-size:9px;color:var(--dim);margin-top:4px;letter-spacing:.14em}
+  .pick-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:16px}
+  .tagx{font-size:10.5px;padding:5px 10px;border-radius:999px;border:1px solid var(--line);
+    color:var(--muted);background:#fff}
+  .tagx.brand{border-color:rgba(200,16,46,.3);color:var(--red);background:var(--red-soft)}
+  .pick-note{margin-top:16px;padding-top:14px;border-top:1px solid var(--line);
+    font-size:12px;line-height:1.8;color:var(--muted)}
+  .pick-note b{color:var(--ink)}
+  .stars{color:var(--red);letter-spacing:.08em;font-size:12px}
+
+  /* ---------- 偏好条 ---------- */
+  .prefs{padding:20px 26px 22px;background:var(--card);border:1px solid var(--line);border-radius:18px;
+    box-shadow:0 12px 30px -26px rgba(26,26,30,.5)}
+  .prefs-head{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  .prefs-row{display:flex;gap:22px;align-items:center;flex-wrap:wrap;margin-top:18px;padding-top:16px;
+    border-top:1px solid var(--line)}
+  .prefs-title{font-family:var(--serif);font-size:14px;letter-spacing:.1em}
+  .prefs-title small{display:block;font-family:var(--sans);font-size:10px;color:var(--dim);letter-spacing:.14em;margin-top:3px}
+  .prow{display:flex;align-items:center;gap:9px;min-width:0}
+  .prow label{font-size:11.5px;color:var(--muted);width:44px;flex:0 0 auto;white-space:nowrap}
+  .prow b{font-size:11.5px;width:22px;text-align:right;font-variant-numeric:tabular-nums;flex:0 0 auto}
+  .prefs-actions{display:flex;gap:7px;flex:0 0 auto}
+  .preset{font:inherit;font-size:11px;color:var(--muted);cursor:pointer;padding:7px 12px;border-radius:999px;
+    border:1px solid var(--line-2);background:transparent;transition:.15s;white-space:nowrap}
+  .preset:hover{color:var(--ink);border-color:var(--ink)}
+  .preset.on{color:#fff;background:var(--red);border-color:var(--red)}
+  input[type=range]{-webkit-appearance:none;appearance:none;height:2px;border-radius:2px;flex:1;outline:none;
+    background:var(--line-2)}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:11px;height:11px;border-radius:50%;
+    background:#fff;border:2px solid var(--red);cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.2)}
+  input[type=range]::-moz-range-thumb{width:11px;height:11px;border-radius:50%;background:#fff;border:2px solid var(--red);cursor:pointer}
+
+  /* ---------- 通用 section ---------- */
+  section{position:relative}
+  .sec{padding:52px 0 0}
+  .sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;
+    padding-bottom:14px;border-bottom:1px solid var(--line);margin-bottom:26px}
+  .sec-title{display:flex;align-items:baseline;gap:14px}
+  .sec-no{font-family:var(--serif);font-size:11px;letter-spacing:.2em;color:var(--red)}
+  .sec-title h3{margin:0;font-family:var(--serif);font-size:23px;font-weight:700;letter-spacing:.06em;white-space:nowrap}
+  @media (max-width:620px){ .sec-title h3{font-size:19px} .sec-title em{display:none} }
+  .sec-title em{font-style:normal;font-size:10.5px;color:var(--dim);letter-spacing:.2em;text-transform:uppercase}
+  .sec-right{font-size:11.5px;color:var(--muted)}
+
+  /* 定位条 */
+  .locrow{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:14px 0 0;font-size:12px;color:var(--muted)}
+  .locrow .dot{width:6px;height:6px;border-radius:50%;background:var(--red)}
+  .locrow b{color:var(--ink);font-weight:600}
+  .locrow .btn-line{padding:7px 14px;font-size:11.5px}
+  .notice{display:flex;gap:10px;align-items:center;margin-top:14px;padding:11px 16px;border-radius:12px;
+    background:rgba(200,16,46,.045);border:1px solid rgba(200,16,46,.14);font-size:11.5px;color:var(--muted)}
+  .notice b{color:var(--ink)}
+  .picker{margin-top:14px;padding:12px;border-radius:16px;background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow)}
+  .picker[hidden]{display:none}
+  .picker-head{display:flex;justify-content:space-between;gap:10px;font-size:11px;color:var(--muted);margin:0 4px 8px;flex-wrap:wrap}
+  .picker svg{cursor:crosshair;border-radius:12px;background:var(--warm)}
+  .pk-lbl{fill:var(--ink);font-size:10px}
+  .pk-me{fill:var(--red);stroke:#fff;stroke-width:2.5}
+  .pk-center{fill:none;stroke:var(--dim);stroke-dasharray:3 3}
+
+  /* 推荐三宫格：一大两小 */
+  .trio{display:grid;grid-template-columns:1.42fr 1fr;gap:18px}
+  .trio-side{display:grid;gap:18px}
+  .rcard{position:relative;background:var(--card);border:1px solid var(--line);border-radius:22px;
+    padding:22px 24px;box-shadow:0 14px 40px -34px rgba(26,26,30,.55);transition:.2s}
+  .rcard:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+  .rcard.big{display:flex;flex-direction:column;justify-content:space-between;
+    background:linear-gradient(160deg,#fff 0%,#fffdfb 60%,#fdf6f4 100%)}
+  .rcard.big::after{content:"";position:absolute;inset:0;border-radius:22px;pointer-events:none;
+    box-shadow:inset 0 0 0 1px rgba(200,16,46,.10)}
+  .rc-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+  .rc-name{font-family:var(--serif);font-size:24px;font-weight:700;letter-spacing:.05em}
+  .rc-sub{font-size:11px;color:var(--dim);margin-top:6px}
+  .rc-rank{font-family:var(--serif);font-size:12px;color:var(--red);letter-spacing:.16em;white-space:nowrap}
+  .rc-metrics{display:flex;gap:26px;margin-top:20px;flex-wrap:wrap}
+  .rc-metrics div span{display:block;font-size:10px;color:var(--dim);letter-spacing:.1em;margin-bottom:5px}
+  .rc-metrics div b{font-size:19px;font-weight:600;font-variant-numeric:tabular-nums}
+  .rc-metrics div b small{font-size:10.5px;color:var(--muted);font-weight:400;margin-left:2px}
+  .rc-why{font-size:11.5px;color:var(--muted);margin-top:16px}
+  .rc-bottom{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;margin-top:18px;flex-wrap:wrap}
+  .rc-win{font-size:11.5px;color:var(--muted);padding:8px 12px;border-radius:10px;
+    background:rgba(46,158,107,.07);border:1px solid rgba(46,158,107,.16);color:#207a52}
+  .rc-score{font-family:var(--serif);font-size:30px;font-weight:700;color:var(--red);font-variant-numeric:tabular-nums}
+  .rc-score span{font-family:var(--sans);font-size:10px;color:var(--dim);margin-left:4px;letter-spacing:.1em}
+  .mini-meta{display:flex;gap:16px;margin-top:12px;font-size:11.5px;color:var(--muted);flex-wrap:wrap}
+  .mini-meta b{color:var(--ink);font-weight:600}
+  .mini-score{font-family:var(--serif);font-size:22px;font-weight:700;font-variant-numeric:tabular-nums}
+
+  /* 图表区 */
+  .charts{display:grid;grid-template-columns:1.32fr .88fr;gap:18px}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:22px 24px;
+    box-shadow:0 14px 40px -36px rgba(26,26,30,.6)}
+  .ph{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+  .ph h4{margin:0;font-family:var(--serif);font-size:15px;font-weight:700;letter-spacing:.08em}
+  .ph .sub{font-size:10.5px;color:var(--dim)}
+  .legend{display:flex;align-items:center;gap:16px;font-size:10.5px;color:var(--dim);margin-top:8px;flex-wrap:wrap}
+  .k{display:inline-block;width:14px;margin-right:6px;vertical-align:middle;border-radius:2px}
+  .k.solid{border-top:2px solid var(--red)}
+  .k.dash{border-top:2px dashed #c9c2bb}
+  .delta{margin-left:auto;color:var(--muted);font-variant-numeric:tabular-nums}
+  .playbar{display:flex;align-items:center;gap:10px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+  .ghost{font:inherit;font-size:11px;color:var(--muted);cursor:pointer;padding:6px 12px;border-radius:999px;
+    border:1px solid var(--line-2);background:transparent;transition:.15s}
+  .ghost:hover{color:var(--ink);border-color:var(--ink)}
+  .ptime{font-size:10.5px;color:var(--dim);font-variant-numeric:tabular-nums;min-width:72px;text-align:right}
+  .bars{display:flex;flex-direction:column;gap:12px}
+  .brow{display:grid;grid-template-columns:16px 40px 1fr 40px 74px;align-items:center;gap:10px}
+  .brow .rk{font-size:10px;color:var(--dim);font-variant-numeric:tabular-nums}
+  .brow.first .rk{color:var(--red);font-weight:700}
+  .brow .nm{font-size:11.5px;color:var(--muted);white-space:nowrap}
+  .brow.first .nm{color:var(--ink);font-weight:600}
+  .trk{height:6px;border-radius:3px;background:rgba(26,26,30,.07);overflow:hidden}
+  .fil{height:100%;width:0;border-radius:3px;transition:width .8s cubic-bezier(.22,.9,.25,1)}
+  .vl{font-size:11px;text-align:right;font-variant-numeric:tabular-nums}
+  .mt{font-size:10px;color:var(--dim);text-align:right;white-space:nowrap}
+  .facts{display:flex;gap:22px;margin-top:18px;padding-top:16px;border-top:1px solid var(--line);flex-wrap:wrap}
+  .facts div span{display:block;font-size:9.5px;color:var(--dim);letter-spacing:.1em;margin-bottom:4px}
+  .facts div b{font-size:12px;font-weight:600}
+  .facts div b i{font-style:normal;color:var(--muted);font-weight:400;margin-left:4px}
+  .chips{display:flex;gap:5px;flex-wrap:wrap}
+  .chip{font-size:10.5px;padding:4px 10px;border-radius:999px;cursor:pointer;color:var(--muted);user-select:none;
+    border:1px solid var(--line);background:transparent;transition:.14s}
+  .chip:hover{color:var(--ink)}
+  .chip.sel{color:#fff;border-color:var(--red);background:var(--red)}
+  svg{display:block;width:100%;height:auto}
+  .ax{stroke:rgba(26,26,30,.08);stroke-width:1}
+  .axt{fill:var(--dim);font-size:9.5px}
+  .lbl{fill:var(--muted);font-size:10px}
+
+  /* 口碑墙 */
+  .rv-wrap{display:grid;grid-template-columns:.78fr 1.22fr;gap:18px}
+  .rv-list{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:10px;
+    box-shadow:0 14px 40px -36px rgba(26,26,30,.6)}
+  .rv-item{display:flex;align-items:center;gap:13px;padding:13px 14px;border-radius:14px;cursor:pointer;transition:.15s}
+  .rv-item:hover{background:rgba(26,26,30,.03)}
+  .rv-item.on{background:var(--red-soft);box-shadow:inset 0 0 0 1px rgba(200,16,46,.18)}
+  .rv-avatar{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;flex:0 0 auto;
+    font-family:var(--serif);font-size:14px;color:var(--red);background:rgba(200,16,46,.08)}
+  .rv-info{flex:1;min-width:0}
+  .rv-info b{display:block;font-size:13px;font-weight:600}
+  .rv-info span{display:block;font-size:10.5px;color:var(--dim);margin-top:3px}
+  .rv-score{text-align:right}
+  .rv-score b{display:block;font-size:15px;font-weight:700;font-variant-numeric:tabular-nums}
+  .rv-score span{font-size:9.5px;color:var(--dim)}
+
+  .rv-detail{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:24px 26px;
+    box-shadow:var(--shadow)}
+  .rv-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  .rv-head h4{margin:0;font-family:var(--serif);font-size:24px;font-weight:700;letter-spacing:.05em}
+  .rv-head .sub{font-size:11px;color:var(--dim);margin-top:6px}
+  .rv-heat-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+  .rv-heat{font-size:10.5px;color:#8a5a12;background:rgba(197,138,42,.10);border-radius:999px;padding:4px 10px}
+  .rv-heat b{color:#7a4d0d;font-weight:700}
+  .rv-heat.muted{color:var(--dim);background:rgba(26,26,30,.05)}
+  .rv-big{text-align:right}
+  .rv-big b{font-family:var(--serif);font-size:38px;font-weight:700;color:var(--red);line-height:1}
+  .rv-big span{display:block;font-size:10px;color:var(--dim);margin-top:5px;letter-spacing:.1em}
+  .rv-divider{height:1px;background:var(--line);margin:20px 0}
+  .rv-sec-title{font-size:11px;letter-spacing:.16em;color:var(--dim);margin-bottom:10px}
+  .dishes{display:flex;gap:8px;flex-wrap:wrap}
+  .dish{display:inline-flex;align-items:center;gap:6px;padding:7px 13px;border-radius:999px;
+    background:var(--warm);border:1px solid rgba(26,26,30,.06);font-size:11.5px;color:var(--ink)}
+  .dish i{font-style:normal;font-size:10px;color:var(--dim)}
+  .rv-quotes{margin-top:6px;display:flex;flex-direction:column;gap:10px}
+  .quote{font-size:12px;line-height:1.8;color:var(--muted);padding-left:12px;border-left:2px solid var(--line-2)}
+  .quote cite{display:block;font-style:normal;font-size:10px;color:var(--dim);margin-top:4px}
+  .quote cite a{color:var(--red);text-decoration:none;border-bottom:1px solid rgba(200,16,46,.25)}
+  .quote cite a:hover{border-bottom-color:var(--red)}
+  .rv-note{font-size:10px;color:var(--dim);margin-top:8px;line-height:1.7}
+  .rv-reviews{display:flex;flex-direction:column;gap:12px;margin-top:6px}
+  .review{font-size:12.5px;line-height:1.7}
+  .review .top{display:flex;align-items:center;gap:8px;font-size:10.5px;color:var(--dim);margin-bottom:4px}
+  .review .txt{color:var(--ink)}
+  .review .dish-tag{font-size:10px;color:var(--red);background:var(--red-soft);padding:2px 8px;border-radius:999px}
+  .empty{font-size:12px;color:var(--dim);padding:10px 0}
+  .rv-form{margin-top:20px;padding-top:18px;border-top:1px solid var(--line)}
+  .star-pick{display:flex;gap:4px;font-size:22px;color:#ddd6cf;cursor:pointer;user-select:none}
+  .star-pick i{font-style:normal;transition:.12s}
+  .star-pick i.on{color:var(--red)}
+  .rv-form .row{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+  .rv-form input[type=text]{font:inherit;font-size:12px;padding:10px 13px;border-radius:10px;
+    border:1px solid var(--line-2);background:#fff;color:var(--ink);outline:none;flex:1;min-width:120px}
+  .rv-form input[type=text]:focus{border-color:var(--red)}
+  .rv-form textarea{font:inherit;font-size:12px;padding:10px 13px;border-radius:10px;width:100%;min-height:64px;
+    border:1px solid var(--line-2);background:#fff;color:var(--ink);outline:none;resize:vertical;margin-top:10px}
+  .rv-form textarea:focus{border-color:var(--red)}
+  .rv-form .btn-solid{padding:10px 20px;font-size:12px}
+
+  /* 全部食堂 */
+  .tbl{width:100%;border-collapse:collapse;font-size:12px}
+  .tbl th{text-align:right;font-weight:500;font-size:10px;letter-spacing:.12em;color:var(--dim);
+    padding:0 0 10px;border-bottom:1px solid var(--line)}
+  .tbl th:first-child{text-align:left;width:30%}
+  .tbl td{padding:13px 0;border-bottom:1px solid rgba(26,26,30,.06);color:var(--muted);
+    text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .tbl td:first-child{text-align:left;color:var(--ink);font-weight:600}
+  .tbl td:first-child span{color:var(--dim);font-weight:400;font-size:10px;margin-left:6px}
+  .badge{font-size:9.5px;padding:3px 8px;border-radius:999px}
+  .badge.ok{color:#207a52;background:rgba(46,158,107,.10)}
+  .badge.warn{color:#8a5a12;background:rgba(197,138,42,.12)}
+  .badge.hot{color:#a2212f;background:rgba(200,16,46,.10)}
+  .badge.off{color:var(--dim);background:rgba(26,26,30,.06)}
+
+  /* footer art */
+  .foot-art{margin-top:64px;position:relative;border-top:1px solid var(--line);padding-top:0}
+  .art-svg{display:block;width:100%;height:150px;color:rgba(200,16,46,.16)}
+  .foot{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;
+    padding:16px 0 42px;font-size:10.5px;color:var(--dim);line-height:1.9}
+  .foot b{color:var(--muted);font-weight:500}
+
+  /* 聊天 */
+  .chat-fab{position:fixed;right:26px;bottom:26px;z-index:20;border:0;cursor:pointer;
+    padding:15px 24px;border-radius:999px;background:var(--red);color:#fff;font:inherit;font-size:14px;font-weight:600;
+    box-shadow:0 14px 34px -14px rgba(200,16,46,.9);transition:.18s;animation:fabGlow 2.8s infinite}
+  .chat-fab:hover{background:var(--red-deep);transform:translateY(-2px)}
+  .chat-fab::before{content:"AI";position:absolute;top:-7px;right:-6px;background:#fff;color:var(--red);
+    font-size:9px;font-weight:800;letter-spacing:.5px;padding:2px 6px;border-radius:7px;border:1px solid rgba(200,16,46,.3)}
+  @keyframes fabGlow{0%,100%{box-shadow:0 14px 34px -14px rgba(200,16,46,.9),0 0 0 0 rgba(200,16,46,.25)}
+    60%{box-shadow:0 14px 34px -14px rgba(200,16,46,.9),0 0 0 12px rgba(200,16,46,0)}}
+  .chat-panel{position:fixed;right:26px;bottom:84px;z-index:21;width:370px;max-width:calc(100vw - 32px);
+    background:var(--card);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);
+    display:flex;flex-direction:column;overflow:hidden}
+  .chat-panel[hidden]{display:none}
+  .chat-head{display:flex;align-items:center;gap:8px;padding:13px 16px;border-bottom:1px solid var(--line)}
+  .chat-head b{font-family:var(--serif);font-size:14px;letter-spacing:.08em}
+  .chat-head span{font-size:10px;color:var(--dim);flex:1;text-align:right}
+  .chat-head button{border:0;background:transparent;font-size:18px;color:var(--dim);cursor:pointer}
+  .chat-body{max-height:340px;overflow-y:auto;padding:14px 16px;display:flex;flex-direction:column;gap:10px;background:var(--paper)}
+  .msg{max-width:88%;padding:10px 13px;border-radius:14px;font-size:12.5px;line-height:1.7;white-space:pre-wrap}
+  .msg.bot{background:#fff;border:1px solid var(--line);align-self:flex-start}
+  .msg.me{background:var(--red);color:#fff;align-self:flex-end}
+  .msg.tip{background:rgba(26,26,30,.04);color:var(--muted);font-size:11px;align-self:stretch;max-width:100%}
+  .chat-input{display:flex;gap:8px;padding:11px 14px;border-top:1px solid var(--line)}
+  .chat-input input{flex:1;font:inherit;font-size:12px;padding:10px 12px;border-radius:10px;
+    border:1px solid var(--line-2);background:#fff;color:var(--ink);outline:none}
+  .chat-input input:focus{border-color:var(--red)}
+  .chat-input button{font:inherit;font-size:12px;font-weight:600;color:#fff;background:var(--red);
+    border:1px solid var(--red);border-radius:10px;padding:0 16px;cursor:pointer}
+  .chat-input button:disabled{opacity:.5}
+  .toast{position:fixed;left:50%;bottom:30px;transform:translateX(-50%) translateY(16px);opacity:0;
+    padding:11px 20px;border-radius:999px;font-size:12px;pointer-events:none;transition:.24s;z-index:30;
+    background:var(--ink);color:#fff}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  @media (max-width:980px){
+    .hero{grid-template-columns:1fr;gap:34px;padding:38px 0 26px}
+    .hero h2{font-size:38px}
+    .trio,.charts,.rv-wrap{grid-template-columns:1fr}
+    .sec{padding:40px 0 0}
+  }
+  @media (max-width:620px){
+    .wrap{padding:0 14px}
+    .hero h2{font-size:32px}
+    .pick{padding:22px 20px 18px}
+    .prefs{gap:14px;padding:16px}
+    .brow{grid-template-columns:14px 36px 1fr 38px}
+    .brow .mt{display:none}
+    .rv-head h4{font-size:20px}
+    .rv-big b{font-size:32px}
+    .tbl{font-size:11px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hdr">
+    <div class="brand">
+      <div class="seal">交</div>
+      <div class="bt">
+        <h1>交我食</h1>
+        <p>SJTU Dining Notes</p>
+      </div>
+    </div>
+    <div class="hdr-right">
+      <div class="clk"><b id="clock">--:--:--</b><span id="mealPill">识别时段</span></div>
+      <span class="live" id="srcPill"><i id="srcDot"></i><span id="srcText">连接中</span></span>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div>
+      <div class="eyebrow">闵行 · 第一至第七餐饮大楼 · 实时就餐指数</div>
+      <h2>努力<em>加餐饭</em></h2>
+      <p class="hero-source">「弃捐勿复道，努力加餐饭。」——《古诗十九首 · 行行重行行》</p>
+      <p class="lead" id="heroLead">正在读取人流量…</p>
+      <div class="hero-stats" id="heroStats"></div>
+      <div class="hero-cta">
+        <button class="btn-solid" id="aiBar">问问交我食 →</button>
+        <button class="btn-line" id="btnGeo2">用我的定位</button>
+      </div>
+    </div>
+
+    <div class="pick">
+      <div class="pick-flag">此刻最佳</div>
+      <div class="pick-top">
+        <div>
+          <div class="pick-name" id="pickName">--</div>
+          <div class="pick-full" id="pickFull">--</div>
+        </div>
+        <div class="pick-sub" id="pickSub">--</div>
+      </div>
+      <div class="pick-mid">
+        <div class="pick-stats" id="pickStats"></div>
+        <div class="ring">
+          <svg viewBox="0 0 120 120">
+            <circle class="ring-track" cx="60" cy="60" r="52"></circle>
+            <circle class="ring-bar" id="ringBar" cx="60" cy="60" r="52"></circle>
+          </svg>
+          <div class="ring-in"><b id="pickScore">--</b><span>综合分</span></div>
+        </div>
+      </div>
+      <div class="pick-tags" id="pickTags"></div>
+      <div class="pick-note" id="pickNote">--</div>
+    </div>
+  </section>
+
+  <div class="locrow">
+    <span class="dot"></span>
+    <span id="locTitle">正在使用示例位置</span>
+    <span id="locSub">（步行时间按示例点计算）</span>
+    <div style="flex:1"></div>
+    <button class="btn-line" id="btnPick">手动选点</button>
+    <button class="btn-line" id="btnGeo">使用我的定位</button>
+  </div>
+  <div class="picker" id="picker" hidden></div>
+  <div class="notice" id="notice" style="display:none"></div>
+
+  <div class="prefs" style="margin-top:26px">
+    <div class="prefs-head">
+      <div class="prefs-title">调音台 <small>PREFERENCES</small></div>
+      <div class="prefs-actions" id="presets">
+        <button class="preset" data-w="15,60,20,5">赶时间</button>
+        <button class="preset" data-w="25,55,15,5">就近吃</button>
+        <button class="preset" data-w="55,15,10,20">吃人气</button>
+        <button class="preset" data-w="20,20,20,40">看口碑</button>
+      </div>
+    </div>
+    <div class="prefs-row">
+      <div class="prow"><label>人气</label><input type="range" id="w0" min="0" max="100" value="25" /><b id="w0v">25</b></div>
+      <div class="prow"><label>距离</label><input type="range" id="w1" min="0" max="100" value="30" /><b id="w1v">30</b></div>
+      <div class="prow"><label>少排队</label><input type="range" id="w2" min="0" max="100" value="30" /><b id="w2v">30</b></div>
+      <div class="prow"><label>口碑</label><input type="range" id="w3" min="0" max="100" value="15" /><b id="w3v">15</b></div>
+    </div>
+  </div>
+
+  <section class="sec">
+    <div class="sec-head">
+      <div class="sec-title"><span class="sec-no">01</span><h3>为你推荐</h3><em>RECOMMENDED</em></div>
+      <div class="sec-right" id="recSummary">计算中</div>
+    </div>
+    <div class="trio">
+      <div id="recBig"></div>
+      <div class="trio-side" id="recSide"></div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="sec-head">
+      <div class="sec-title"><span class="sec-no">02</span><h3>实时人流</h3><em>LIVE CROWD</em></div>
+      <div class="sec-right" id="barTag">--</div>
+    </div>
+    <div class="charts">
+      <div class="panel">
+        <div class="ph">
+          <h4>人流趋势</h4>
+          <div class="chips" id="chips"></div>
+        </div>
+        <div id="lineWrap"></div>
+        <div class="legend">
+          <span><i class="k solid"></i>今日</span>
+          <span><i class="k dash"></i>昨日同时段</span>
+          <span class="delta" id="trendDelta">--</span>
+        </div>
+        <div class="playbar">
+          <button class="ghost" id="btnPlay">▶ 回放</button>
+          <input type="range" id="scrub" min="0" max="119" value="119" />
+          <span class="ptime" id="scrubTime">--</span>
+          <button class="ghost" id="btnLive">最新</button>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="ph"><h4>当前排队最快</h4><span class="sub">按推荐度</span></div>
+        <div class="bars" id="bars"></div>
+        <div class="facts" id="facts3"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="sec-head">
+      <div class="sec-title"><span class="sec-no">03</span><h3>食堂口碑</h3><em>REVIEWS</em></div>
+      <div class="sec-right" id="rvSummary">社区口碑 + 同学评分</div>
+    </div>
+    <div class="rv-wrap">
+      <div class="rv-list" id="rvList"></div>
+      <div class="rv-detail" id="rvDetail"></div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="sec-head">
+      <div class="sec-title"><span class="sec-no">04</span><h3>全部食堂</h3><em>ALL CANTEENS</em></div>
+      <div class="sec-right" id="dataTag">--</div>
+    </div>
+    <div class="panel">
+      <div id="scatterWrap"></div>
+      <div style="margin-top:18px" id="tableWrap"></div>
+    </div>
+  </section>
+
+  <div class="foot-art">
+    <svg class="art-svg" viewBox="0 0 1200 150" preserveAspectRatio="none" aria-hidden="true">
+      <defs>
+        <pattern id="motif" width="150" height="150" patternUnits="userSpaceOnUse">
+          <!-- 校门 -->
+          <g stroke="currentColor" stroke-width="1.1" fill="none">
+            <path d="M12 44 V26 h22 v18" />
+            <path d="M12 26 q11 -14 22 0" />
+            <path d="M17 44 v-9 h12 v9" />
+          </g>
+          <!-- 碗筷 -->
+          <g stroke="currentColor" stroke-width="1.1" fill="none">
+            <path d="M84 30 q10 16 20 0" />
+            <path d="M84 30 h20" />
+            <path d="M92 18 v-12 M97 18 v-12 M102 18 v-12" />
+          </g>
+          <!-- 蒸笼 -->
+          <g stroke="currentColor" stroke-width="1.1" fill="none">
+            <rect x="14" y="96" width="34" height="9" rx="3" />
+            <rect x="17" y="86" width="28" height="9" rx="3" />
+            <path d="M17 86 q14 -8 28 0" />
+          </g>
+          <!-- 思源湖波纹 -->
+          <g stroke="currentColor" stroke-width="1.1" fill="none">
+            <path d="M78 104 q8 -6 16 0 t16 0" />
+            <path d="M78 112 q8 -6 16 0 t16 0" />
+          </g>
+          <!-- 交大印记 -->
+          <g stroke="currentColor" stroke-width="1.1" fill="none">
+            <circle cx="118" cy="58" r="9" />
+            <path d="M114 60 l4 -8 l4 8 M115 57 h6" />
+          </g>
+        </pattern>
+      </defs>
+      <rect width="1200" height="150" fill="url(#motif)" opacity=".72" />
+      <ellipse cx="600" cy="104" rx="168" ry="66" fill="#fbf8f4" opacity=".96" />
+      <!-- 校门剪影 -->
+      <g stroke="#c8102e" stroke-opacity=".42" stroke-width="1.5" fill="none">
+        <path d="M492 132 V72 h216 v60" />
+        <path d="M492 72 q108 -50 216 0" />
+        <path d="M534 132 V96 h50 v36" />
+        <path d="M616 132 V96 h50 v36" />
+        <circle cx="600" cy="80" r="8" />
+        <path d="M588 132 h24" />
+      </g>
+    </svg>
+  </div>
+
+  <footer class="foot">
+    <span id="footSrc">数据：上海交通大学校园生活平台 就餐指数</span>
+    <span id="footWin">--</span>
+  </footer>
+</div>
+
+<div class="chat-panel" id="chatPanel" hidden>
+  <div class="chat-head">
+    <b>交我食助手</b>
+    <span id="chatStatus">deepseek-chat · 致远一号</span>
+    <button id="chatClose" title="关闭">×</button>
+  </div>
+  <div class="chat-body" id="chatBody">
+    <div class="msg bot">你好，我是交我食。问我「现在去哪吃」「哪个窗口人少」都可以。</div>
+  </div>
+  <form class="chat-input" id="chatForm">
+    <input id="chatText" placeholder="比如：10 分钟内能吃上，别太挤" autocomplete="off" />
+    <button type="submit" id="chatSend">发送</button>
+  </form>
+</div>
+<button class="chat-fab" id="chatFab">💬 问交我食</button>
+<div class="toast" id="toast"></div>
+
+<script>
+var WALK_GRAPH = {"nodes":[[121.44134,31.02139],[121.44443,31.02209],[121.44587,31.02222],[121.44793,31.02227],[121.43388,31.0164],[121.43483,31.0167],[121.43732,31.01748],[121.43736,31.01749],[121.43889,31.0179],[121.43897,31.01792],[121.44959,31.02518],[121.44883,31.0308],[121.44897,31.03037],[121.44932,31.02918],[121.43197,31.02084],[121.43233,31.01986],[121.43281,31.01864],[121.43298,31.01814],[121.43488,31.01458],[121.42104,31.03058],[121.41974,31.03337],[121.43004,31.02041],[121.4265,31.01929],[121.43695,31.02306],[121.44896,31.01987],[121.44987,31.01784],[121.44992,31.01771],[121.44103,31.01846],[121.44236,31.01878],[121.44257,31.01884],[121.44659,31.01954],[121.44721,31.01963],[121.45009,31.02494],[121.4405,31.03155],[121.44126,31.03124],[121.44137,31.03118],[121.44155,31.03102],[121.44135,31.03024],[121.4369,31.02939],[121.43649,31.02885],[121.43681,31.02886],[121.42122,31.02274],[121.42135,31.02241],[121.42202,31.02086],[121.44263,31.02802],[121.44242,31.02818],[121.4423,31.02808],[121.44252,31.02791],[121.42031,31.02484],[121.42121,31.02514],[121.42196,31.02538],[121.42204,31.02541],[121.42286,31.02555],[121.43346,31.03158],[121.43347,31.03154],[121.43389,31.03062],[121.43445,31.02955],[121.43512,31.02808],[121.43514,31.02802],[121.43519,31.02794],[121.43992,31.0329],[121.44011,31.03296],[121.44272,31.03292],[121.44199,31.03169],[121.42926,31.02789],[121.43002,31.02814],[121.43044,31.02828],[121.43086,31.02842],[121.43165,31.02866],[121.43287,31.02904],[121.43368,31.02929],[121.43381,31.02934],[121.43392,31.02937],[121.42496,31.04715],[121.42608,31.04452],[121.42787,31.04065],[121.42872,31.03889],[121.42748,31.04499],[121.42438,31.04396],[121.42337,31.03933],[121.42644,31.02509],[121.42325,31.03018],[121.42316,31.03041],[121.42329,31.03008],[121.42338,31.02986],[121.42354,31.02947],[121.42365,31.02921],[121.42418,31.02937],[121.4245,31.02952],[121.42442,31.02994],[121.42418,31.03049],[121.42414,31.03057],[121.42408,31.0307],[121.4282,31.03138],[121.4282,31.03151],[121.42792,31.03192],[121.43485,31.02237],[121.43466,31.02279],[121.42741,31.02541],[121.4274,31.02544],[121.42721,31.02584],[121.42707,31.02612],[121.42704,31.02617],[121.42692,31.02644],[121.42665,31.02702],[121.42654,31.02726],[121.42648,31.02738],[121.42636,31.02763],[121.42624,31.02789],[121.42591,31.02867],[121.42574,31.02906],[121.42572,31.0291],[121.42571,31.02913],[121.43496,31.02956],[121.43544,31.02971],[121.43607,31.02991],[121.43614,31.02993],[121.42292,31.04717],[121.42613,31.04014],[121.42996,31.03046],[121.42998,31.03042],[121.43024,31.02984],[121.43029,31.02972],[121.43043,31.02939],[121.43057,31.02907],[121.4307,31.02879],[121.43098,31.02814],[121.4312,31.02765],[121.43132,31.02739],[121.43154,31.02694],[121.43159,31.02688],[121.43162,31.02681],[121.43164,31.02675],[121.43702,31.01924],[121.43789,31.01953],[121.43813,31.01901],[121.42805,31.03051],[121.43028,31.02451],[121.43067,31.02449],[121.43073,31.02457],[121.4305,31.02487],[121.43037,31.02485],[121.42345,31.02525],[121.42326,31.02443],[121.42334,31.02411],[121.42888,31.03522],[121.4289,31.03515],[121.42892,31.03508],[121.43016,31.03498],[121.42983,31.03591],[121.43716,31.02252],[121.43802,31.02046],[121.43912,31.03107],[121.4385,31.03264],[121.4382,31.03252],[121.43749,31.0323],[121.43438,31.02769],[121.43435,31.02776],[121.43432,31.02783],[121.43422,31.02806],[121.43406,31.02842],[121.43161,31.03095],[121.43159,31.03098],[121.41908,31.02812],[121.42044,31.02792],[121.42088,31.02915],[121.42992,31.03241],[121.43013,31.03248],[121.43056,31.03262],[121.43075,31.03268],[121.4313,31.03285],[121.4304,31.03325],[121.42988,31.03304],[121.42906,31.03276],[121.42865,31.03258],[121.42047,31.02901],[121.42028,31.02822],[121.41913,31.02864],[121.43,31.02859],[121.42965,31.02858],[121.42951,31.0288],[121.4295,31.02883],[121.42937,31.02913],[121.42952,31.02926],[121.42983,31.02919],[121.4299,31.02884],[121.44137,31.03241],[121.44238,31.02849],[121.43917,31.02872],[121.44032,31.01755],[121.44148,31.01792],[121.43219,31.02545],[121.42996,31.03553],[121.42442,31.02588],[121.42398,31.02685],[121.42462,31.03685],[121.4253,31.03708],[121.42845,31.03502],[121.42939,31.02955],[121.43001,31.02566],[121.43057,31.02582],[121.4309,31.02591],[121.43106,31.02596],[121.4358,31.03218],[121.436,31.03171],[121.43563,31.03132],[121.43464,31.031],[121.43504,31.02939],[121.43551,31.02955],[121.44116,31.03066],[121.43405,31.02658],[121.43394,31.02685],[121.43896,31.02866],[121.44813,31.01789],[121.44796,31.01893],[121.42758,31.02502],[121.42827,31.02521],[121.43173,31.02848],[121.4257,31.02697],[121.43295,31.02886],[121.44153,31.02829],[121.43715,31.01784],[121.43426,31.0171],[121.4337,31.01838],[121.43999,31.02633],[121.42265,31.02989],[121.4299,31.02592],[121.43491,31.02544],[121.43483,31.02562],[121.42159,31.02608],[121.44144,31.03133],[121.44171,31.03148],[121.44176,31.03151],[121.44141,31.01659],[121.44132,31.01677],[121.42531,31.02978],[121.43993,31.03259],[121.43996,31.03266],[121.4305,31.03157],[121.43107,31.03175],[121.44617,31.03724],[121.44623,31.03725],[121.44676,31.03701],[121.44714,31.03751],[121.43029,31.0321],[121.43077,31.03226],[121.4281,31.03052],[121.43693,31.0286],[121.43691,31.02865],[121.42488,31.03081],[121.43802,31.03106],[121.43866,31.03127],[121.43757,31.02566],[121.43763,31.02582],[121.43779,31.02629],[121.42731,31.03462],[121.44724,31.0172],[121.44722,31.01732],[121.44715,31.01769],[121.42697,31.02753],[121.44017,31.0264],[121.43764,31.01669],[121.43409,31.02524],[121.43404,31.02536],[121.42948,31.02829],[121.44043,31.03141],[121.43996,31.0316],[121.43715,31.0331],[121.42967,31.03041],[121.42968,31.03037],[121.43002,31.03537],[121.42209,31.02745],[121.42215,31.02747],[121.42283,31.02768],[121.42968,31.0323],[121.44137,31.01818],[121.44202,31.01837],[121.44209,31.01659],[121.44248,31.0167],[121.43412,31.03434],[121.43452,31.03396],[121.43477,31.03336],[121.43497,31.03312],[121.43687,31.03375],[121.44181,31.03155],[121.43608,31.03007],[121.44113,31.01813],[121.4288,31.02894],[121.42624,31.02553],[121.43471,31.03089],[121.43541,31.03111],[121.43567,31.0312],[121.43569,31.03123],[121.43584,31.03135],[121.43685,31.03145],[121.4371,31.03165],[121.43728,31.03173],[121.43735,31.03176],[121.43767,31.03186],[121.43684,31.02964],[121.43695,31.02967],[121.42515,31.03018],[121.43453,31.02674],[121.43476,31.02683],[121.42985,31.03141],[121.43047,31.03163],[121.43762,31.02556],[121.43344,31.02272],[121.43333,31.023],[121.43318,31.02333],[121.43306,31.02363],[121.43295,31.02389],[121.43287,31.02408],[121.44511,31.03708],[121.44491,31.03774],[121.43562,31.02487],[121.43398,31.02437],[121.43361,31.02426],[121.43354,31.02423],[121.4333,31.02416],[121.43257,31.02418],[121.43232,31.02426],[121.43221,31.0243],[121.43119,31.02455],[121.42994,31.02442],[121.43807,31.02024],[121.43603,31.02831],[121.43737,31.02874],[121.43884,31.01569],[121.4349,31.02969],[121.43589,31.03001],[121.43693,31.03035],[121.43815,31.03074],[121.4411,31.02714],[121.42065,31.02746],[121.42123,31.02765],[121.42183,31.02784],[121.42191,31.02787],[121.42387,31.03315],[121.42431,31.03327],[121.42587,31.03372],[121.42452,31.02447],[121.42467,31.02452],[121.4254,31.02475],[121.43118,31.03151],[121.43084,31.03225],[121.42498,31.02606],[121.42513,31.02611],[121.42393,31.02566],[121.42962,31.03069],[121.43369,31.02647],[121.42865,31.0293],[121.44112,31.01649],[121.44199,31.0168],[121.4276,31.02617],[121.43643,31.0259],[121.4365,31.02607],[121.43661,31.02624],[121.43697,31.02683],[121.42495,31.03767],[121.4245,31.03879],[121.42425,31.03939],[121.44429,31.03693],[121.43101,31.02502],[121.43141,31.02515],[121.4321,31.02537],[121.4322,31.0254],[121.4318,31.03171],[121.43059,31.0313],[121.42595,31.0264],[121.42553,31.02736],[121.43736,31.02865],[121.43152,31.02745],[121.4317,31.02751],[121.42121,31.02927],[121.42129,31.02929],[121.42862,31.03571],[121.43006,31.03611],[121.42819,31.03559],[121.43927,31.01711],[121.43601,31.03225],[121.43276,31.02717],[121.43272,31.02724],[121.42334,31.02529],[121.42521,31.03729],[121.42569,31.03744],[121.42453,31.03706],[121.44242,31.02935],[121.44275,31.02945],[121.4429,31.0295],[121.44297,31.02952],[121.42861,31.02144],[121.42853,31.0218],[121.42846,31.02209],[121.42838,31.02241],[121.42831,31.02269],[121.42819,31.02318],[121.42816,31.02328],[121.42814,31.02335],[121.42811,31.02345],[121.42803,31.02381],[121.42755,31.02513],[121.43846,31.03285],[121.43846,31.03289],[121.43023,31.02517],[121.43056,31.02528],[121.43108,31.02546],[121.43126,31.02551],[121.43206,31.02577],[121.44227,31.01619],[121.4422,31.01634],[121.42585,31.03701],[121.43641,31.02578],[121.43442,31.02701],[121.43351,31.02671],[121.4259,31.03687],[121.44083,31.03219],[121.4408,31.03215],[121.44001,31.03058],[121.42466,31.02827],[121.42426,31.02814],[121.42353,31.0279],[121.43678,31.01916],[121.43771,31.01947],[121.42541,31.03973],[121.42534,31.0399],[121.42565,31.03914],[121.42611,31.03801],[121.44365,31.02797],[121.44518,31.02847],[121.42382,31.03857],[121.42369,31.03883],[121.42627,31.03933],[121.42606,31.02591],[121.43361,31.02522],[121.43523,31.02575],[121.43873,31.03293],[121.44219,31.03403],[121.44264,31.03418],[121.42848,31.03293],[121.42918,31.03147],[121.42156,31.02248],[121.44466,31.03332],[121.44447,31.03412],[121.42316,31.02693],[121.42331,31.02663],[121.42447,31.02768],[121.42458,31.02738],[121.42472,31.02709],[121.42881,31.03668],[121.44191,31.01696],[121.42107,31.03003],[121.42093,31.02999],[121.44214,31.02849],[121.44307,31.02872],[121.44321,31.02877],[121.44329,31.02879],[121.44274,31.02714],[121.42111,31.02971],[121.42117,31.02973],[121.42296,31.03035],[121.4209,31.02586],[121.42446,31.02873],[121.42448,31.0287],[121.4245,31.02865],[121.42486,31.02778],[121.42497,31.02751],[121.42241,31.02669],[121.42247,31.02671],[121.43954,31.03074],[121.44033,31.03238],[121.44036,31.03243],[121.4291,31.02826],[121.42957,31.02822],[121.43111,31.02584],[121.43095,31.02622],[121.43164,31.02644],[121.43176,31.02648],[121.4275,31.02648],[121.42588,31.0263],[121.42553,31.03784],[121.41829,31.02951],[121.41911,31.02762],[121.4284,31.02836],[121.42864,31.02932],[121.42945,31.02554],[121.42999,31.02571],[121.43651,31.03458],[121.43701,31.03342],[121.44725,31.01934],[121.44735,31.01885],[121.44818,31.01896],[121.43003,31.03098],[121.42968,31.03188],[121.43595,31.03238],[121.43597,31.03234],[121.43618,31.03187],[121.42739,31.03733],[121.44364,31.02741],[121.44386,31.02748],[121.44329,31.0283],[121.44347,31.02838],[121.44201,31.02979],[121.43512,31.02922],[121.43329,31.02597],[121.43306,31.02695],[121.42801,31.03051],[121.42821,31.03082],[121.43497,31.02954],[121.43541,31.02857],[121.43588,31.02865],[121.4449,31.03109],[121.44529,31.03067],[121.4457,31.03028],[121.42254,31.02639],[121.42224,31.02709],[121.42194,31.02779],[121.43927,31.03078],[121.43897,31.03143],[121.43868,31.03134],[121.43853,31.03081],[121.43615,31.0354],[121.42454,31.02484],[121.42423,31.02513],[121.42345,31.02667],[121.4362,31.02544],[121.42922,31.02798],[121.42893,31.02866],[121.42838,31.02991],[121.42836,31.02995],[121.42132,31.02924],[121.42105,31.0304],[121.42105,31.03045],[121.42463,31.02942],[121.43619,31.02358],[121.44489,31.03338],[121.44501,31.03265],[121.4448,31.03413],[121.44512,31.03516],[121.43788,31.03138],[121.43784,31.03148],[121.43729,31.03277],[121.43727,31.03281],[121.43726,31.03284],[121.43192,31.02609],[121.4321,31.02568],[121.43229,31.02495],[121.43229,31.0249],[121.42902,31.04099],[121.4233,31.03931],[121.44375,31.01876],[121.44417,31.01814],[121.4463,31.01751],[121.42256,31.02971],[121.42138,31.02926],[121.42102,31.0259],[121.42188,31.02617],[121.44325,31.01639],[121.44641,31.01703],[121.44735,31.01722],[121.436,31.02836],[121.42959,31.03082],[121.42673,31.03527],[121.44643,31.02567],[121.44284,31.02461],[121.44133,31.0241],[121.44085,31.02394],[121.43816,31.02323],[121.44654,31.02541],[121.44715,31.024],[121.44724,31.02379],[121.44732,31.02359],[121.44942,31.02409],[121.44965,31.0257],[121.44918,31.02499],[121.44888,31.02471],[121.45053,31.01797],[121.44637,31.01716],[121.44816,31.02846],[121.44803,31.02862],[121.44762,31.02954],[121.44751,31.02988],[121.44735,31.03043],[121.4413,31.02417],[121.44127,31.02422],[121.44104,31.02438],[121.44081,31.02431],[121.44079,31.02407],[121.44082,31.02401],[121.4514,31.02914],[121.45139,31.02937],[121.45102,31.03164],[121.45097,31.03178],[121.45012,31.03369],[121.44947,31.03444],[121.4484,31.03521],[121.44648,31.03573],[121.44535,31.03566],[121.44576,31.03008],[121.44586,31.0301],[121.44592,31.03019],[121.44585,31.0303],[121.44669,31.02794],[121.44864,31.03562],[121.44899,31.03659],[121.44887,31.03752],[121.44879,31.03786],[121.44823,31.03917],[121.44451,31.02996],[121.4501,31.0285],[121.44461,31.02974],[121.44728,31.02326],[121.44717,31.02345],[121.45354,31.03459],[121.44862,31.03236],[121.44061,31.02496],[121.44013,31.02639],[121.4472,31.0278],[121.44002,31.02635],[121.44748,31.03447],[121.44074,31.025],[121.44079,31.02502],[121.44929,31.02489],[121.44879,31.0253],[121.44053,31.02493],[121.44853,31.02435],[121.44807,31.02486],[121.44784,31.03052],[121.44937,31.03098],[121.44758,31.0278],[121.44888,31.0282],[121.44955,31.02839],[121.42669,31.02091],[121.42609,31.02064],[121.42595,31.02059],[121.42709,31.0214],[121.42716,31.02157],[121.42719,31.02166],[121.42723,31.02192],[121.42722,31.02215],[121.42719,31.02227],[121.42718,31.02237],[121.42714,31.02248],[121.42705,31.02283],[121.42701,31.02302],[121.42697,31.02319],[121.42695,31.02325],[121.42688,31.02357],[121.42654,31.0248],[121.42743,31.02116],[121.42646,31.01939],[121.42644,31.01943],[121.42585,31.02056],[121.42636,31.01941],[121.42638,31.01936],[121.42642,31.01927],[121.43839,31.03289],[121.43926,31.03281],[121.44043,31.0324],[121.44249,31.03056],[121.44258,31.0304],[121.44261,31.03033],[121.42741,31.01714],[121.42653,31.01912],[121.4265,31.01918],[121.42646,31.01928],[121.41517,31.02154],[121.42747,31.02333],[121.42738,31.02368],[121.42748,31.02328],[121.42754,31.02305],[121.42758,31.02292],[121.42768,31.02257],[121.4277,31.0225],[121.42778,31.02125],[121.42784,31.02164],[121.42789,31.02198],[121.42788,31.02223],[121.42786,31.02231],[121.41822,31.02179],[121.44753,31.02095],[121.44643,31.02025],[121.41664,31.04012],[121.44791,31.03036],[121.44812,31.0299],[121.44857,31.02891],[121.44495,31.032],[121.44686,31.03164],[121.44697,31.03163],[121.44846,31.03212],[121.44777,31.03341],[121.44767,31.03351],[121.44718,31.03403],[121.4467,31.03455],[121.44671,31.03273],[121.44882,31.03208],[121.44893,31.0319],[121.44901,31.03175],[121.4492,31.03143],[121.44923,31.03137],[121.44953,31.0306],[121.44988,31.0295],[121.44994,31.02928],[121.44996,31.02914],[121.44998,31.02901],[121.43069,31.02982],[121.43138,31.03],[121.4315,31.03003],[121.43187,31.03013],[121.4317,31.02968],[121.432,31.02962],[121.4322,31.02961],[121.4315,31.02935],[121.43131,31.02928],[121.43495,31.01643],[121.43483,31.01579],[121.43578,31.01609],[121.42395,31.02296],[121.42592,31.0222],[121.42626,31.0223],[121.4288,31.0283],[121.42895,31.02797],[121.42699,31.02119],[121.42597,31.02156],[121.42601,31.02128],[121.42607,31.02088],[121.42624,31.02087],[121.42575,31.02347],[121.42585,31.0232],[121.42347,31.02376],[121.42375,31.0239],[121.42465,31.02419],[121.42484,31.02425],[121.42543,31.02444],[121.42603,31.02463],[121.42588,31.0239],[121.42483,31.024],[121.42518,31.02398],[121.42483,31.0252],[121.42525,31.02487],[121.42476,31.02539],[121.42482,31.02503],[121.42472,31.02489],[121.4249,31.02489],[121.42432,31.02334],[121.43008,31.02804],[121.42961,31.02693],[121.43221,31.02572],[121.43314,31.02632],[121.43379,31.02385],[121.43336,31.02396],[121.43455,31.02811],[121.4363,31.02797],[121.43765,31.02702],[121.43848,31.02643],[121.43144,31.02213],[121.43171,31.02265],[121.43148,31.02318],[121.43136,31.02343],[121.4312,31.02374],[121.43231,31.02238],[121.43217,31.02388],[121.43181,31.02385],[121.43246,31.02375],[121.43265,31.02352],[121.42856,31.02351],[121.42857,31.02399],[121.42874,31.02405],[121.42876,31.02428],[121.42569,31.0257],[121.42381,31.02505],[121.42374,31.02525],[121.42365,31.0255],[121.42338,31.02492],[121.42368,31.02512],[121.42386,31.02563],[121.4265,31.02301],[121.42657,31.02276],[121.42667,31.02263],[121.4263,31.02184],[121.42668,31.02202],[121.42672,31.02225],[121.42598,31.02302],[121.42608,31.02269],[121.42497,31.02321],[121.42639,31.02353],[121.42639,31.02388],[121.43348,31.02513],[121.42418,31.0226],[121.42394,31.0225],[121.42328,31.02223],[121.42279,31.02207],[121.42259,31.02199],[121.42187,31.02175],[121.42247,31.02279],[121.42231,31.02322],[121.42568,31.02373],[121.43192,31.02332],[121.43204,31.02335],[121.43236,31.02344],[121.43266,31.0228],[121.43251,31.02312],[121.43192,31.02361],[121.43215,31.02367],[121.43445,31.02362],[121.43547,31.02376],[121.43595,31.02352],[121.43523,31.02367],[121.43586,31.02909],[121.42603,31.02598],[121.42528,31.0205],[121.44911,31.03196],[121.44981,31.03216],[121.44944,31.03246],[121.4495,31.03249],[121.44966,31.03255],[121.45037,31.03274],[121.44972,31.0324],[121.44696,31.03137],[121.44521,31.03116],[121.44532,31.03097],[121.44595,31.03124],[121.44669,31.03129],[121.44595,31.03106],[121.44877,31.0304],[121.44865,31.03022],[121.44852,31.02984],[121.44895,31.0293],[121.44786,31.02986],[121.44956,31.02923],[121.45099,31.035],[121.42589,31.02529],[121.42629,31.02543],[121.45007,31.02668],[121.45007,31.02655],[121.45007,31.02645],[121.44888,31.02458],[121.44752,31.02388],[121.44701,31.02372],[121.44296,31.02441],[121.44293,31.02446],[121.44965,31.02656],[121.41626,31.02893],[121.41629,31.02887],[121.4171,31.02696],[121.41889,31.02276],[121.4381,31.02897],[121.43817,31.02893],[121.43953,31.02937],[121.43954,31.02943],[121.44723,31.0274],[121.44742,31.02654],[121.40231,31.01243],[121.41648,31.01607],[121.41705,31.01628],[121.41645,31.01614],[121.41641,31.01622],[121.40058,31.0122],[121.42552,31.01908],[121.42572,31.01904],[121.42494,31.01889],[121.42482,31.01875],[121.40068,31.01193],[121.41652,31.01597],[121.42326,31.01807],[121.42491,31.01855],[121.42741,31.01932],[121.42864,31.0197],[121.4164,31.01626],[121.4142,31.01558],[121.40068,31.0119],[121.41657,31.01585],[121.41412,31.01577],[121.41577,31.01775],[121.42904,31.02026],[121.42312,31.01835],[121.42314,31.01831],[121.42159,31.02299],[121.4224,31.02131],[121.42397,31.02029],[121.43778,31.0271],[121.4399,31.02631],[121.42481,31.02774],[121.42471,31.02766],[121.42456,31.02766],[121.42459,31.02791],[121.4161,31.02897],[121.41608,31.02899],[121.41549,31.0303],[121.44595,31.03795],[121.44884,31.03727],[121.44657,31.03733],[121.44773,31.03812],[121.44756,31.03802],[121.44655,31.03769],[121.44811,31.03726],[121.44868,31.03784],[121.44989,31.03745],[121.44975,31.03745],[121.44807,31.0377],[121.44793,31.03755],[121.44875,31.03557],[121.45028,31.0367],[121.44968,31.03739],[121.44999,31.03697],[121.44786,31.03784],[121.4296,31.02877],[121.42976,31.02871],[121.4477,31.03625],[121.44089,31.02998],[121.44099,31.0299],[121.44105,31.02983],[121.43914,31.03366],[121.43923,31.03346],[121.42226,31.02454],[121.42266,31.02467],[121.42231,31.02455],[121.42154,31.02428],[121.42122,31.02399],[121.42143,31.02426],[121.42211,31.02479],[121.44046,31.03244],[121.43031,31.03342],[121.42894,31.02779],[121.42405,31.02237],[121.42429,31.02242],[121.42449,31.02163],[121.42505,31.02103],[121.42454,31.02145],[121.42472,31.02174],[121.42482,31.02154],[121.42417,31.02132],[121.42343,31.02191],[121.42393,31.02038],[121.42833,31.02058],[121.43529,31.02297],[121.43454,31.02306],[121.43706,31.03021],[121.44772,31.03764],[121.43201,31.02982],[121.43216,31.02995],[121.43189,31.03002],[121.43248,31.02961],[121.43169,31.02907],[121.43168,31.02882],[121.43236,31.03026],[121.43209,31.03019],[121.43152,31.03038],[121.43224,31.02998],[121.43218,31.02933],[121.43144,31.03011],[121.43149,31.03046],[121.42318,31.01822],[121.42324,31.01811],[121.42402,31.01654],[121.4242,31.01619],[121.42426,31.01605],[121.42545,31.01367],[121.43305,31.02653],[121.44238,31.03034],[121.44273,31.03045],[121.43826,31.02577],[121.42188,31.02793],[121.4226,31.0264],[121.41711,31.01212],[121.41508,31.01942],[121.42266,31.02806],[121.42264,31.0281],[121.42296,31.02739],[121.42094,31.03055],[121.41479,31.02858],[121.42095,31.03037],[121.42113,31.03042],[121.42125,31.03046],[121.41487,31.02841],[121.42182,31.02789],[121.42201,31.02783],[121.422,31.0279],[121.42197,31.02794],[121.44253,31.0303],[121.4427,31.03035],[121.44275,31.03039],[121.4427,31.03052],[121.44257,31.03059],[121.43925,31.03277],[121.43839,31.03285],[121.42835,31.02998],[121.44241,31.03053],[121.44235,31.03041],[121.44407,31.03096],[121.44413,31.03082],[121.44241,31.03029],[121.44214,31.01926],[121.44223,31.01923],[121.44232,31.01925],[121.44238,31.01936],[121.44156,31.02085],[121.41127,31.03807],[121.42043,31.04145],[121.41883,31.03517],[121.4149,31.03413],[121.4131,31.0337],[121.41611,31.03118],[121.42006,31.0325],[121.41421,31.03069],[121.43718,31.03148],[121.43857,31.03161],[121.43572,31.03106],[121.43567,31.03064],[121.43562,31.03063],[121.43122,31.01557],[121.42856,31.03244],[121.42977,31.02621],[121.42974,31.02633],[121.42941,31.02716],[121.42867,31.03215],[121.4441,31.03089],[121.44958,31.02672],[121.44961,31.02665],[121.44977,31.02768],[121.45002,31.02684],[121.45004,31.02678],[121.45005,31.02776],[121.45041,31.02695],[121.45043,31.02688],[121.44648,31.02555],[121.45052,31.02668],[121.45052,31.02663],[121.44385,31.02298],[121.42088,31.01907],[121.42177,31.01528],[121.4259,31.01663],[121.42486,31.01865],[121.42747,31.03716],[121.42762,31.03684],[121.42283,31.03638],[121.44296,31.02978],[121.42398,31.01611],[121.44743,31.02363],[121.44753,31.0237],[121.41629,31.01828],[121.41608,31.0182],[121.41549,31.01954],[121.41591,31.01837],[121.42283,31.02968],[121.423,31.02929],[121.42309,31.02911],[121.42315,31.02896],[121.42175,31.02867],[121.42003,31.02596],[121.41976,31.02654],[121.42147,31.0271],[121.42157,31.02688],[121.42173,31.02651],[121.42106,31.02697],[121.42096,31.02693],[121.42062,31.02682],[121.42024,31.0267],[121.42015,31.02667],[121.42133,31.02638],[121.42122,31.02635],[121.42088,31.02623],[121.4205,31.02611],[121.42041,31.02608],[121.42028,31.02637],[121.42119,31.02667],[121.42068,31.02651],[121.42075,31.02653],[121.42079,31.02654],[121.42045,31.02722],[121.43064,31.02567],[121.43089,31.02575],[121.43059,31.02569],[121.43052,31.02544],[121.43249,31.02491],[121.43271,31.02496],[121.43203,31.02612],[121.43217,31.02616],[121.43094,31.02625],[121.43045,31.01731],[121.43065,31.01688],[121.43086,31.01638],[121.42928,31.01821],[121.42752,31.01904],[121.431,31.0173],[121.43123,31.01707],[121.43105,31.01644],[121.43133,31.01638],[121.43175,31.01619],[121.43155,31.0166],[121.43192,31.01671],[121.43165,31.01721],[121.41222,31.01489],[121.41541,31.01952],[121.41823,31.02965],[121.43188,31.03103],[121.4323,31.03117],[121.43473,31.01189],[121.41968,31.03335],[121.41889,31.03519],[121.45056,31.01785],[121.45018,31.01717],[121.44931,31.01583],[121.44775,31.0156],[121.45083,31.01611],[121.44955,31.01463],[121.44596,31.01434],[121.44581,31.01536],[121.44369,31.01502],[121.44795,31.01449],[121.44397,31.01418],[121.42554,31.03519],[121.42761,31.03615],[121.43395,31.02036],[121.44682,31.0329],[121.44795,31.03363],[121.44599,31.03279],[121.43623,31.03449],[121.43509,31.03413],[121.43735,31.03389],[121.43483,31.03455],[121.43618,31.03458],[121.43334,31.03362],[121.43343,31.03296],[121.43359,31.03271],[121.42931,31.02616],[121.4292,31.02608],[121.42918,31.02612],[121.4288,31.02698],[121.42951,31.0262],[121.42886,31.03173],[121.43137,31.02668],[121.43318,31.03186],[121.43303,31.03037],[121.43371,31.02954],[121.43378,31.02957]],"edges":[[0,16,912.4],[0,996,66.3],[0,1,321.2],[1,1028,136.8],[1,2,144.8],[2,680,317.5],[2,3,206.2],[3,571,164.7],[3,24,297.4],[4,18,233.6],[4,17,221.2],[4,5,101.5],[5,6,264.9],[5,714,33.5],[6,7,4.8],[6,221,45.3],[7,8,160.2],[7,261,96.2],[8,9,8.7],[8,379,100.2],[9,328,371.3],[9,325,284.2],[9,27,215.6],[10,622,45.2],[10,835,157.1],[10,32,58.2],[11,12,51.6],[11,627,98.6],[11,628,57.3],[11,824,47.5],[12,13,142.5],[12,825,34.4],[12,700,59.6],[13,829,23.5],[13,631,94.5],[13,827,39.4],[14,15,117.4],[14,150,529.3],[14,21,200.7],[14,23,580.9],[14,867,342.1],[15,1113,182.8],[15,16,149.6],[16,17,61.3],[17,223,77.4],[18,328,398.2],[18,409,779.2],[19,969,9.8],[19,20,348.6],[19,532,15.3],[20,1098,7],[20,1099,227.9],[21,96,537.8],[21,22,377.7],[22,650,12.1],[22,665,4.1],[23,96,224.8],[23,567,126.5],[24,31,177.8],[24,25,252.4],[25,26,16.1],[25,576,64.7],[25,257,260],[26,559,263.6],[26,1101,68],[26,1100,66.1],[27,286,39.2],[27,28,138.1],[28,29,22.5],[28,993,54.4],[29,994,55.6],[29,30,410.9],[30,31,62.6],[30,681,84.4],[31,489,32.8],[33,417,76.3],[33,265,16.7],[33,34,84.2],[34,230,28.5],[34,35,12.9],[35,36,25.9],[35,230,22.6],[36,209,57.3],[36,37,137.9],[38,300,37.6],[38,39,106.9],[38,40,80.7],[39,510,64.7],[39,40,34.1],[40,248,27.2],[41,679,319.9],[41,48,260],[41,42,40.1],[42,441,22.3],[42,43,193],[43,875,310.2],[43,1029,325],[44,47,17.1],[44,500,73.1],[44,45,31.8],[45,187,37],[45,46,16.8],[46,220,80.4],[46,47,35.4],[47,457,102.5],[48,482,344.8],[48,49,96.8],[49,50,79.6],[49,461,90.1],[50,51,9],[50,229,89],[51,383,176.4],[51,52,87.4],[52,514,101.8],[52,383,57.1],[53,54,4.6],[53,494,266.3],[53,162,199.2],[54,495,253.7],[54,1096,119.2],[54,55,114.9],[55,289,87.3],[55,56,136.6],[56,329,48.3],[56,72,56.5],[56,57,182.3],[57,58,8],[57,560,90.2],[57,158,81.1],[58,59,10.2],[58,157,85],[58,326,94.4],[59,371,223.2],[59,156,82.8],[59,356,257.8],[60,61,20.4],[61,237,37.8],[61,62,332.9],[62,186,153.7],[62,63,254.5],[63,284,23.3],[63,186,125.1],[64,65,81.4],[64,526,10.4],[64,1128,144.8],[64,1014,88],[64,923,34.9],[65,66,44.4],[65,745,14.1],[66,67,45.3],[66,126,73.5],[67,126,33.8],[67,125,46],[67,68,84.6],[68,69,129.6],[68,217,22.9],[69,219,22.2],[69,942,76.4],[69,70,85.9],[70,161,292.8],[70,160,107.6],[70,71,14.6],[71,72,11.5],[71,1134,24.9],[72,1135,25.4],[73,74,325.5],[74,78,182.9],[74,77,149.6],[74,75,484.1],[75,118,184],[75,548,122.2],[75,76,220.8],[78,118,476.9],[78,117,400.4],[78,79,731.2],[79,425,208.1],[79,549,6.9],[80,832,41.7],[80,99,98.6],[80,343,112.2],[80,648,35.7],[81,82,28],[81,83,12.8],[81,90,99.7],[82,460,20.5],[82,92,96.4],[83,84,26.3],[83,225,67.6],[84,1044,59],[84,85,48.3],[85,86,32.1],[85,1045,57.5],[86,87,56.5],[86,1047,65.6],[87,462,79.7],[87,88,37.1],[88,235,86.9],[88,89,55.6],[89,90,67.8],[89,301,78.1],[90,91,9.8],[91,92,17],[91,249,79.6],[92,249,102.2],[93,507,65.8],[93,136,316.6],[93,94,15.1],[94,1130,70.6],[94,95,69.3],[95,1015,80],[95,1011,115.6],[96,97,51.8],[97,935,66.2],[97,936,32],[98,99,3.8],[98,1126,196],[98,401,35],[99,100,50.7],[100,101,35.5],[100,288,103],[101,102,5.9],[101,354,54.8],[102,103,33.5],[102,433,104],[103,104,73.3],[103,479,111.1],[103,478,59.7],[104,105,29.2],[104,369,103.7],[104,923,245.9],[105,106,15.9],[105,218,90.1],[106,107,30.8],[106,259,52.3],[107,108,32.8],[107,370,88.9],[108,109,96.5],[108,466,135.1],[109,419,134],[109,110,48.6],[110,111,4.2],[110,464,127],[110,528,268.6],[111,112,4],[111,463,133.3],[111,529,282],[112,462,127.1],[112,986,268.4],[113,114,51.4],[113,329,15.9],[113,508,3.3],[114,115,66.4],[114,208,20],[115,116,7.9],[115,808,101.6],[116,285,17.3],[116,300,96.3],[118,425,83.9],[118,497,349.1],[119,120,5],[119,162,173.7],[119,269,30],[120,528,163.2],[120,161,166],[120,121,72.9],[121,198,91.3],[121,122,15],[122,123,40.7],[122,705,41.6],[123,124,38.9],[123,184,64.8],[124,125,35.5],[124,185,72],[125,178,73.3],[126,127,62],[127,128,32],[127,745,158.2],[128,372,21.6],[128,129,56.5],[129,130,9.1],[129,158,284.3],[130,131,8.5],[130,382,121.5],[131,132,5.2],[131,1131,29],[131,381,116.2],[132,1131,27.9],[132,477,32.9],[133,422,25.9],[133,423,74],[133,134,135.7],[134,135,64.6],[134,423,18.8],[135,221,231.8],[135,423,78.9],[136,506,4.1],[136,246,5.2],[137,324,35.7],[137,139,45.8],[137,141,45.3],[137,138,44.3],[138,759,102.4],[138,139,11.6],[139,323,45.7],[139,140,47.3],[140,363,53.4],[140,141,13.6],[141,404,40.4],[142,774,27.4],[142,383,12.1],[142,772,36.4],[142,143,100.9],[143,914,136.3],[143,144,38.9],[144,341,125.9],[144,729,42.2],[145,146,7.9],[145,192,114.9],[145,149,158.3],[146,147,8.4],[146,197,47],[147,270,114.9],[147,148,158.2],[148,270,47.3],[148,149,266.5],[149,192,46.2],[150,839,592.8],[150,151,250.2],[152,518,43.9],[152,517,37.2],[152,153,313.1],[153,154,33],[153,402,24.3],[154,155,76.2],[154,298,138.3],[155,298,53.3],[155,541,58.4],[156,157,8.6],[156,381,166.5],[156,303,106.1],[157,158,9.4],[157,382,173.6],[158,159,27.5],[159,160,45.7],[159,751,38.9],[160,219,166.2],[161,162,5],[161,1095,26.9],[163,164,148.3],[164,176,38.1],[164,334,56.8],[164,165,166.1],[165,175,43.5],[165,374,36.6],[166,167,22.2],[166,274,31.1],[166,173,129.6],[167,168,46.3],[167,172,69.2],[167,244,47.3],[168,169,20.3],[168,245,47.3],[169,170,58.4],[169,345,53.3],[170,367,141.6],[170,171,212.9],[171,922,20.6],[171,172,57.8],[172,173,89.1],[173,174,47.2],[174,440,139.8],[174,439,44.1],[175,452,216],[175,176,103.5],[176,177,142.8],[178,185,30.8],[178,179,35.9],[179,264,37.6],[179,180,29.9],[180,181,3.2],[180,906,9.1],[181,182,37.6],[181,527,60.9],[182,287,61.4],[182,183,25.4],[183,198,35.7],[183,184,41.9],[184,185,40.8],[185,906,33.8],[186,921,113.3],[187,453,24.3],[187,454,73.7],[188,212,22.3],[188,848,86.5],[188,260,272.9],[189,190,123.9],[189,286,130.2],[189,234,179.7],[190,275,32.5],[190,450,119.4],[191,545,28.5],[191,366,5.2],[191,1074,85.7],[192,270,19.3],[193,194,121],[193,346,59.4],[193,348,55.8],[194,524,57.4],[194,448,78.8],[195,196,72.3],[196,384,25.7],[196,411,76],[197,255,123.9],[197,378,70.6],[197,340,355.5],[198,351,80],[199,200,57.8],[199,486,6.1],[199,404,60.5],[200,201,34.8],[200,1072,14.4],[201,202,16.4],[201,1071,21.3],[202,474,14.5],[202,475,31.5],[203,204,57.7],[203,380,22.8],[203,206,234],[204,205,58.7],[204,496,26.7],[205,206,105.7],[205,292,12.4],[206,289,14.8],[207,208,51.3],[207,508,18.2],[207,503,22],[208,503,69.6],[210,211,32.5],[210,350,39.1],[210,302,51.4],[211,413,51.8],[211,414,45.7],[212,847,88.4],[212,224,274.8],[213,214,122.2],[213,258,101.2],[213,489,390.7],[214,490,61.9],[214,491,22.3],[215,216,73.4],[215,400,147.4],[215,401,12.8],[217,219,129.2],[217,372,160.8],[218,369,70.7],[218,370,47.9],[220,333,142.8],[220,911,189.8],[221,223,472.5],[222,223,158.9],[224,618,3.7],[224,881,9.3],[225,553,23],[225,460,62.5],[226,1078,105.7],[226,486,25.5],[226,1012,35.1],[227,228,22.6],[228,263,84],[228,435,43.7],[229,555,61.2],[229,556,31],[230,231,31.8],[231,232,5.9],[231,987,124.9],[231,417,114.1],[232,284,7.9],[232,659,132.4],[232,416,123],[233,234,22.8],[233,352,31.6],[233,353,62.6],[234,450,63.2],[235,301,49.7],[235,533,91.3],[236,237,8.8],[236,471,46.5],[236,657,71.8],[237,657,75],[237,921,53.1],[238,239,61.1],[238,305,7.4],[238,368,32.3],[239,344,30],[239,345,63.5],[240,241,6.2],[240,889,84.8],[240,890,386.6],[240,313,109.8],[241,894,60.2],[241,891,33.8],[241,242,60.6],[242,243,69.2],[242,895,155.3],[242,891,42.7],[243,894,62.8],[243,938,59.9],[243,891,58.1],[244,245,52.1],[244,305,57.3],[245,345,7.1],[246,986,67.5],[246,507,38.8],[247,248,6.2],[247,326,96.9],[247,327,47.1],[248,560,92.1],[248,909,409],[249,301,78],[250,251,69],[250,539,39.6],[250,332,39.4],[251,519,8.8],[251,520,54.4],[252,253,19.6],[252,306,12.7],[252,356,118.6],[253,254,56.6],[253,357,114.2],[254,358,105],[254,961,76.9],[256,257,13.6],[256,558,85.5],[256,559,11.9],[257,258,44.3],[257,577,82.3],[258,552,88.2],[260,616,3.6],[260,333,127.7],[262,263,14.7],[263,434,46],[264,473,12.1],[264,472,39.1],[265,266,52.4],[265,418,106],[266,470,96.5],[266,469,108.6],[267,1132,402],[267,543,31.6],[267,488,40.5],[268,269,4],[268,986,134.5],[268,543,772.4],[268,440,132.3],[269,529,141.3],[271,272,6.3],[271,516,42.4],[271,515,44.5],[272,273,72.9],[272,976,42.2],[272,468,92.8],[273,421,75],[273,966,48.5],[273,968,34.3],[275,276,68.6],[275,286,25],[277,278,41.9],[277,410,30.6],[277,353,26.1],[279,280,65.3],[280,281,73.7],[280,1118,57.6],[280,1122,119.1],[280,1120,79],[281,1123,134.8],[281,282,35.5],[282,283,203.3],[282,1124,139.2],[283,488,40.2],[283,487,102.8],[283,1119,51.1],[284,921,163],[284,983,128.6],[285,330,20.4],[285,331,90.5],[287,527,35.3],[287,351,43.7],[288,832,13.2],[288,433,47.1],[288,769,67.3],[289,290,75.4],[290,291,26.9],[290,1009,60.2],[291,292,4.5],[291,1007,17],[292,293,20.4],[293,296,173.1],[293,294,110.3],[294,1005,37.1],[294,295,35.3],[295,296,19.8],[295,1005,20.6],[296,297,7.5],[297,298,35.1],[297,496,137.6],[298,540,48.1],[299,300,11.1],[302,303,24.8],[302,413,31.5],[302,504,186.8],[303,435,134.3],[304,305,67.7],[304,492,53.7],[304,493,57.2],[306,315,215.2],[306,961,68.7],[307,308,34.8],[307,760,120.7],[307,936,116.9],[308,309,40.9],[308,800,71.1],[309,310,37.5],[309,801,72.2],[310,311,31.4],[310,764,42.5],[311,312,23.8],[311,763,51.1],[312,320,32.3],[312,319,44.8],[313,314,78.9],[313,362,83.9],[313,597,166.2],[315,435,109.1],[315,534,160.9],[315,316,174.5],[316,434,104.8],[316,936,162.7],[316,317,38.8],[317,318,8.4],[317,749,51.4],[318,319,25.1],[318,787,108.2],[319,750,24.7],[320,321,26.5],[320,1074,88.9],[321,322,12],[321,761,46.7],[322,547,70.2],[322,323,107.3],[323,363,57.2],[324,767,127.5],[324,485,138.7],[326,560,7.1],[327,371,10.1],[327,846,77.4],[328,410,328.7],[329,330,105.8],[330,1009,76.4],[331,937,21.8],[331,332,131.1],[332,520,39],[333,457,177.1],[334,1069,47.8],[334,335,62.4],[335,1051,68.1],[335,336,64.5],[336,337,7.9],[336,975,5.3],[337,516,9.2],[337,962,8.4],[337,977,9.9],[338,339,46.5],[339,1035,390.8],[339,340,164.1],[340,415,478.9],[341,342,16.1],[341,731,33.1],[342,522,39.3],[342,343,77.1],[343,739,20.6],[344,367,65.9],[344,368,63.4],[346,347,16.8],[346,740,105.3],[347,448,121.9],[347,479,77.6],[348,775,7.3],[348,524,127],[348,523,68.9],[349,367,269.2],[351,484,3.5],[353,450,31.9],[355,356,20.3],[355,525,79.9],[355,412,16],[356,357,22.1],[357,358,78.5],[357,752,284],[358,752,148.5],[359,360,137.7],[359,480,61.6],[359,430,202.9],[360,361,74.2],[360,430,72.1],[360,426,122.7],[363,364,43.2],[364,365,73.1],[364,407,44.2],[365,366,11.3],[365,546,50.5],[366,546,52.8],[368,492,83],[369,479,14.2],[370,448,87],[371,847,82.7],[371,880,190.2],[372,373,18.6],[374,375,8.4],[374,452,84.7],[374,975,162.7],[375,530,7.1],[375,458,51.8],[376,377,151.5],[376,378,44.7],[376,449,149.4],[378,1034,156.6],[378,562,150.9],[380,495,11.8],[380,496,47.2],[381,382,9.5],[381,958,79.1],[384,385,50.5],[384,386,73.5],[385,411,52.1],[385,480,48.7],[387,388,34.3],[388,389,16],[388,454,90.5],[388,502,115.5],[389,390,7.6],[389,455,86.4],[389,979,92.3],[390,456,90.8],[390,661,100.6],[391,392,42.1],[391,674,85.5],[391,755,295.4],[391,874,144],[392,393,35],[392,675,71.6],[393,394,38.3],[393,676,58.2],[394,395,33.4],[394,678,53.2],[395,396,57.8],[395,672,63.9],[396,397,11.4],[396,670,66.1],[397,398,8.6],[397,765,55.4],[398,399,12.2],[398,765,46.2],[399,400,42.5],[399,667,65.5],[400,668,66.4],[400,766,58.8],[401,648,108],[402,403,4.9],[402,985,6.5],[402,984,76.7],[403,436,26.9],[403,656,7.6],[403,657,80.9],[404,405,35.3],[405,406,56.2],[405,1073,18.6],[406,407,19.1],[406,1071,36.5],[407,408,85.3],[407,474,41.8],[408,544,40.1],[408,545,10.9],[409,410,18.6],[409,557,100.8],[410,577,408.2],[411,415,17.3],[413,505,172],[415,497,158.6],[416,417,5.4],[416,658,46.3],[417,470,52],[418,909,112.3],[418,469,50.8],[419,420,42.8],[419,464,46.1],[419,465,59.3],[420,421,77.1],[420,446,57.1],[421,968,99.4],[424,425,21.9],[424,426,72.3],[424,432,130.4],[426,427,139.3],[426,432,66.2],[427,480,61.1],[427,432,204],[428,499,60.2],[428,501,51.4],[428,429,164.2],[430,431,32.8],[433,809,8.3],[434,504,92.8],[436,912,132],[436,437,369.6],[437,438,48.3],[437,912,347.5],[440,507,142.3],[441,793,90.4],[441,794,97.7],[442,536,106.2],[442,535,23.6],[442,443,95.8],[443,538,227.1],[443,537,33.9],[444,445,37.9],[444,468,74.2],[444,447,152.1],[444,968,53.7],[445,963,74.9],[445,524,13.4],[446,447,36.3],[446,884,9.5],[447,448,36.1],[447,466,41.3],[451,452,14.7],[451,531,43.6],[451,458,38.8],[452,971,42.8],[454,455,15.5],[454,500,53.7],[455,456,8.2],[456,501,50.8],[457,498,95.5],[458,459,6.8],[459,460,192.6],[459,554,56.2],[459,972,78.9],[461,555,13],[461,1049,118.9],[462,463,4.1],[462,978,253.8],[463,464,4.5],[463,967,196.4],[464,966,186.9],[465,466,33.8],[465,882,6.7],[467,468,5.6],[467,514,38],[467,515,49.3],[468,963,36.2],[469,517,27.8],[470,471,5.7],[470,984,112],[471,658,8.4],[472,526,35],[472,527,49.4],[474,544,86.4],[475,476,73.7],[475,1078,3.5],[476,477,12.6],[476,1078,79.1],[477,544,47.9],[479,809,40.7],[481,843,203.9],[481,971,270.1],[481,482,233.8],[481,1094,17.2],[482,844,215.3],[483,484,153.4],[484,528,73.2],[485,486,57.8],[485,1126,67.7],[487,521,102],[487,488,494.3],[489,490,58],[490,551,333.3],[492,561,48.2],[494,495,4.6],[494,542,141.6],[495,541,134.8],[497,1033,21.2],[498,499,23.3],[498,500,108.2],[499,621,504.1],[500,501,20.5],[503,509,80.4],[504,748,43.8],[508,509,155.5],[509,510,54.6],[510,560,36],[511,819,30.5],[511,536,186.5],[511,512,62.4],[512,513,61.2],[512,820,37.6],[513,608,124.1],[513,598,29.7],[513,601,16],[514,556,70.9],[514,963,5.6],[515,1052,68.4],[516,976,7.9],[517,520,74.3],[518,519,30.2],[518,1006,60.3],[519,1006,33.4],[522,742,17.5],[522,738,65.7],[522,523,64],[523,770,45.4],[526,721,26.4],[528,529,4.3],[529,986,3.8],[530,554,6.8],[530,962,161],[531,532,6.7],[531,971,10.2],[531,972,8.4],[532,969,15.7],[534,806,24.4],[534,624,462.4],[535,536,86.2],[535,537,88],[537,538,123.8],[538,597,62.8],[539,540,11.6],[539,1005,95],[540,1006,74.8],[541,542,4.6],[541,985,105.5],[542,543,4.2],[542,656,112.6],[543,656,112.8],[544,1076,11.6],[545,747,12.3],[546,547,5.5],[547,1074,20.8],[550,551,101.7],[551,552,306.3],[552,577,41.2],[553,1044,28.3],[553,554,130.8],[554,978,155.9],[555,1061,41.8],[556,1053,42.5],[557,558,324.7],[557,1108,165.4],[558,577,14.6],[559,1103,192.9],[563,1025,15.6],[563,841,338.8],[563,564,379.8],[564,840,19.1],[564,565,162.7],[565,566,51.5],[565,583,8.3],[566,588,8.9],[566,567,285.6],[567,587,267.6],[567,874,929.7],[568,1025,17.4],[568,569,173.8],[568,835,361.7],[568,839,363.4],[569,570,26.6],[569,837,48.7],[569,838,42.4],[570,571,24.1],[570,837,29.9],[570,838,24.6],[571,1038,11],[571,838,44],[572,836,74.9],[573,574,95.8],[574,575,44.5],[574,622,15.7],[574,623,53.3],[578,579,22.8],[579,602,170.1],[579,580,114.1],[580,828,42.5],[580,581,40.6],[581,828,33.6],[581,582,65.9],[582,627,49.9],[582,600,146.2],[583,584,7],[583,588,48.9],[583,1018,839.5],[584,587,48.7],[584,1017,839.1],[584,585,31.3],[585,621,77.5],[585,586,25.5],[586,624,77.3],[586,587,29.7],[587,588,6.9],[588,650,1462.4],[589,590,26],[590,702,157],[590,591,267.1],[591,592,17.5],[591,628,181.6],[592,698,172.9],[592,593,237.3],[593,614,229.2],[593,613,364.4],[593,594,108.8],[594,830,170.4],[594,595,140.2],[595,619,126.1],[595,603,53.7],[595,596,203],[596,693,142.2],[596,597,116],[598,610,122.2],[598,599,9.4],[599,602,275.4],[599,600,12.3],[600,601,15.5],[601,818,218],[602,617,53.3],[603,901,11.1],[603,908,122.3],[603,604,118.7],[604,830,670.1],[604,605,109.2],[605,606,41],[605,903,84.7],[606,896,10.6],[606,898,132.4],[606,607,161.6],[609,631,55.7],[611,1038,111.1],[612,1039,57],[614,695,36.5],[614,690,148.6],[614,689,31.8],[615,624,9.2],[615,620,13.3],[615,618,171.6],[616,618,12.2],[616,620,172.3],[617,850,46],[617,629,37.9],[619,693,104.9],[619,692,64.2],[620,621,5.9],[622,836,54.6],[625,837,114.2],[625,836,44.8],[625,626,74.8],[627,683,19.8],[628,699,47.2],[628,700,47.3],[629,850,85.2],[629,630,138],[630,631,68.6],[630,1017,185.9],[630,685,88.1],[631,1019,85.1],[632,722,44.7],[632,649,80.4],[632,633,68.7],[633,634,15.2],[633,725,27.8],[634,652,9.9],[634,651,144],[635,636,21.3],[635,722,26.3],[635,649,44.7],[636,637,10.1],[636,723,121.2],[637,675,67.9],[637,638,31.6],[638,676,68.3],[638,639,25],[639,640,12.7],[639,677,68],[640,641,11.7],[640,780,63.5],[641,642,13.2],[641,673,54.3],[642,643,41.3],[642,719,89.2],[643,644,23],[643,671,53.6],[644,645,19.7],[644,777,57.3],[645,646,7.2],[645,669,53],[646,647,38.4],[646,782,100],[647,648,146.1],[647,668,51.8],[647,785,49.6],[648,734,54.4],[649,674,36.2],[649,934,114.5],[650,651,4.8],[650,654,8.4],[651,874,264.7],[651,653,8.2],[652,810,68.4],[652,653,143.8],[653,654,5],[653,875,331.2],[654,655,11.9],[654,858,87.5],[655,665,4.7],[655,859,74.2],[656,985,4.6],[657,984,4.6],[658,921,6.2],[659,660,20.7],[659,987,8.9],[659,983,7.9],[660,661,8.8],[660,959,21.4],[660,960,16.1],[661,979,9.6],[661,980,9.2],[662,1031,162.3],[662,1010,597.4],[662,663,246.3],[663,664,7.6],[663,866,88.6],[663,865,168.3],[664,665,12.1],[664,1032,167.5],[664,840,1672.1],[666,965,315.7],[667,668,41],[667,669,5.5],[669,670,28],[670,671,15.3],[671,672,41.8],[672,673,8.7],[673,678,35.1],[674,675,46.5],[675,676,39.1],[676,677,28.3],[677,678,8.5],[682,1099,614.8],[683,684,56.6],[683,824,93.9],[684,685,123.6],[684,828,25],[684,826,40.6],[685,827,58.7],[686,687,198.7],[687,688,10.5],[687,818,31],[688,694,130.5],[688,689,165.1],[689,699,133.9],[690,691,15.8],[690,1114,123],[691,692,77],[691,1115,31.1],[691,1114,111.7],[692,693,77.9],[693,694,211.7],[694,1114,21.5],[694,1116,75.6],[695,696,22.6],[695,813,71.8],[696,697,19.3],[696,811,18.9],[697,698,41.5],[697,812,106.6],[698,699,8.2],[700,701,132.1],[701,829,43],[701,702,25.9],[702,703,16.8],[703,704,15.6],[703,829,39.4],[705,706,72.5],[705,943,173.2],[706,707,12.5],[706,950,13],[706,709,52.8],[707,708,38.7],[707,950,6.7],[708,941,12.7],[708,947,34.2],[708,946,21.9],[709,939,34.2],[709,949,69.7],[709,941,46.5],[709,712,45.8],[709,710,31.1],[710,949,28.5],[710,711,20.5],[711,942,28.1],[711,949,53.5],[711,939,30.7],[712,713,19],[712,943,32.6],[714,716,127.8],[714,715,100],[717,788,47.9],[717,729,105.1],[717,784,132.6],[718,719,33.6],[719,723,101.5],[719,783,47.8],[720,721,54.5],[721,923,20.5],[722,724,104.7],[723,724,32.6],[724,725,46.9],[725,726,16.8],[727,728,33.2],[727,785,64],[727,735,54.1],[727,796,33],[728,784,89.1],[728,782,27],[729,795,148.5],[729,730,32.2],[730,731,97],[730,744,125.4],[731,732,19.9],[732,733,62.7],[732,736,30.7],[733,734,64.5],[733,735,80.5],[734,735,96.4],[736,784,104.2],[736,737,36.9],[738,739,54.2],[738,741,18],[738,740,24.5],[739,743,35.5],[740,769,100.4],[741,743,20.8],[741,742,22.8],[742,743,20.4],[745,746,163.8],[747,1076,48.2],[747,748,139],[748,958,25.8],[752,753,238.7],[753,880,15.8],[753,754,108.7],[755,760,91.4],[755,756,69.5],[756,757,64.9],[756,760,71],[757,758,32.3],[757,797,47.2],[758,759,39],[758,802,59.9],[759,762,70.2],[761,763,33.3],[761,762,36.4],[762,802,30.3],[763,764,33.3],[764,799,30.8],[765,766,70.8],[766,767,17.9],[767,768,34],[769,809,61.3],[770,774,14.7],[770,771,25.9],[771,775,50.8],[771,774,16.9],[771,772,30],[772,775,26.3],[773,774,36.8],[776,777,29.8],[777,783,49.7],[777,778,17.8],[779,780,51.7],[780,781,29.9],[782,783,39.8],[785,786,44],[788,789,27.2],[788,925,23.2],[789,790,73],[789,924,18.2],[790,791,51.9],[790,932,40.4],[791,792,22],[791,794,85.6],[792,793,77],[792,878,86.6],[793,878,76],[794,795,53.5],[795,877,77.8],[797,798,13],[797,800,116.9],[798,799,33.3],[798,802,32.3],[799,801,39.7],[800,801,40.7],[802,803,24],[804,805,177.9],[805,807,26.9],[805,806,62.3],[806,936,151.3],[810,879,136.5],[810,927,65],[811,812,69.5],[811,813,63.2],[812,817,27.7],[813,814,7.5],[814,817,31.9],[814,815,16.4],[815,816,70.8],[815,817,18.3],[818,822,27.1],[819,821,72.9],[819,820,24.5],[820,823,61.6],[821,823,20.2],[821,822,74.5],[822,823,86.4],[824,825,22.4],[825,826,44.7],[826,827,86.2],[830,901,301.6],[831,832,41.2],[833,834,14.8],[833,841,44.3],[833,1021,11.8],[834,835,12.1],[834,1026,45.5],[834,1025,360.3],[835,1027,48.9],[837,1039,23.2],[838,839,446.7],[839,840,6.4],[840,1025,359.6],[841,1018,11.5],[842,843,7.4],[843,844,235.9],[843,974,144.8],[844,845,519.5],[846,847,8.4],[846,849,153.5],[847,848,138.4],[848,849,7.3],[848,911,154.4],[849,910,155.5],[850,851,102.4],[852,853,1483],[853,854,62.5],[853,855,8.7],[853,863,12.8],[854,855,63],[854,952,653.8],[855,856,9.7],[855,1092,447.4],[856,868,5.2],[856,857,1577],[856,876,682.1],[858,859,20.8],[858,860,61.2],[859,861,96.8],[860,861,20.1],[860,876,183.4],[861,952,175.2],[862,863,1577.9],[863,871,14.4],[863,953,683.2],[864,953,5.7],[864,954,193],[864,871,686.8],[864,865,167.9],[865,1032,12],[865,1031,244.5],[866,867,125.1],[866,1083,34.1],[867,1082,184.4],[868,873,184.1],[868,875,681.9],[868,869,223.5],[870,871,1578.7],[871,964,461.2],[872,873,336.8],[873,965,206.1],[875,876,5.1],[876,952,11.6],[878,879,277.8],[879,933,11.1],[880,881,241.5],[881,961,176.4],[882,883,5.6],[882,885,23.7],[883,884,6],[883,885,17.8],[884,885,23],[886,887,3.3],[887,970,131.4],[887,969,494.4],[887,888,163.4],[890,896,67.6],[890,895,79.4],[891,894,42.3],[892,893,21.9],[893,905,36.5],[893,894,115.2],[895,900,38],[896,899,64],[897,898,14],[898,903,10.2],[899,905,29],[899,900,25],[900,938,24.8],[901,902,220.7],[903,904,57.8],[905,938,30.2],[906,907,9],[909,910,14.4],[909,988,147.9],[910,911,9.1],[910,959,148.2],[911,991,139.7],[912,913,25],[914,916,5.2],[914,917,81.6],[915,916,38.4],[916,920,40.1],[917,919,10.5],[917,918,61.4],[924,926,97],[924,925,24.4],[925,929,90.1],[926,929,23.2],[926,928,20.9],[927,930,64.2],[927,928,88.6],[928,930,30.4],[928,931,39.2],[929,930,25],[939,941,24.8],[939,940,20.9],[940,948,7.7],[940,941,31.2],[942,946,96.9],[943,944,21.9],[945,946,27.3],[947,951,8.4],[947,950,39.3],[952,953,13.9],[953,1032,166.1],[954,1030,283.8],[954,955,44.4],[955,956,17.6],[955,1037,23.4],[956,1031,177.4],[956,957,300.3],[958,1076,192.8],[959,988,8],[959,991,6.5],[960,981,6.8],[960,982,8.7],[960,1016,146.2],[962,978,8.5],[962,975,7.8],[965,1093,34.8],[966,967,4.5],[966,976,67.4],[967,977,68.4],[969,1003,243.3],[972,973,12.4],[976,977,7.5],[977,978,6],[979,991,8.6],[980,981,5.9],[980,1036,67.3],[981,990,141.1],[982,989,142],[982,983,14.6],[987,988,14.8],[992,996,284.8],[992,995,58],[992,993,9.8],[993,994,9.8],[994,995,14.6],[995,996,281],[997,999,1196.1],[998,1035,643],[999,1099,6.7],[999,1098,227.7],[999,1000,412.8],[1000,1002,362.8],[1000,1001,189.2],[1002,1004,198.4],[1002,1003,428.2],[1003,1098,105.4],[1008,1009,4.6],[1010,1097,663.4],[1010,1081,100.6],[1012,1013,14.2],[1012,1131,170.2],[1012,1126,60.3],[1013,1125,55.5],[1013,1014,103.6],[1014,1128,64.6],[1017,1018,7.9],[1017,1020,44.5],[1018,1021,43.6],[1019,1020,101.4],[1019,1022,29.8],[1020,1021,7.5],[1020,1023,38.6],[1021,1024,39.4],[1033,1034,40.1],[1033,1111,402.2],[1034,1112,106.3],[1035,1099,417.5],[1038,1039,13],[1040,1041,23.1],[1041,1042,176.4],[1041,1043,28.1],[1042,1093,8.3],[1042,1043,142],[1043,1093,148.5],[1044,1045,48.1],[1045,1046,23.3],[1045,1048,165.8],[1046,1047,17.9],[1046,1048,142.7],[1047,1048,161.8],[1049,1050,73.2],[1049,1063,40.9],[1050,1058,40.9],[1050,1069,141.8],[1051,1052,26.8],[1051,1054,44.2],[1052,1053,45.8],[1053,1059,43.2],[1054,1055,10.5],[1054,1065,36.4],[1055,1056,37.2],[1055,1068,46.2],[1056,1057,40.3],[1056,1067,34.9],[1056,1069,49],[1057,1058,9.8],[1057,1066,47.4],[1058,1064,36.8],[1059,1060,11.1],[1059,1065,36.4],[1060,1061,37.3],[1060,1068,46.2],[1061,1062,40],[1061,1067,34.6],[1062,1063,10],[1062,1066,46.8],[1063,1064,36.2],[1064,1066,41.2],[1065,1068,40.8],[1066,1067,6.5],[1067,1068,5],[1070,1071,26],[1074,1075,22.8],[1076,1077,14.2],[1079,1080,52.9],[1080,1081,61.9],[1080,1085,62.3],[1081,1086,20.5],[1084,1085,35.5],[1085,1091,45.5],[1086,1089,53.1],[1086,1087,28.6],[1087,1089,32.8],[1087,1088,47.4],[1089,1090,39.3],[1095,1096,43.2],[1095,1133,133.9],[1096,1133,125.7],[1102,1103,158.4],[1102,1105,141.8],[1102,1104,155.9],[1103,1107,196.7],[1103,1109,129.9],[1106,1107,119.1],[1107,1108,215.2],[1108,1110,101.1],[1117,1118,116],[1118,1121,131.8],[1125,1127,13.5],[1125,1129,20.2],[1126,1127,5.2],[1127,1128,106.3],[1133,1135,131.6],[1133,1134,113],[1134,1135,7.8]],"snap":{"100":668,"200":364,"300":483,"400":968,"500":412,"600":265,"700":294,"campus_center":531},"meta":{"generated":"2026-11-22","source":"OSM via overpass.openstreetmap.fr","node_count":1136,"edge_count":1603,"bbox":[121.40058,31.01189,121.45354,31.04717]}};
+var SNAPSHOT = {"source":"campuslife.sjtu.edu.cn /api/jczs","fetchedAt":"2026-11-22T14:37:13.760Z","windowStart":"17:00","windowEnd":"18:59","minutes":120,"canteens":[{"id":100,"name":"第一餐厅","isOpen":1,"img":"https://api.sjtu.edu.cn/v1/file/f84681af-156d-4b26-a2c8-5e71fdeec763","note":"","schedule":"非开放时段","subs":[{"id":1,"name":"1F 餐厅","open":1,"closeDesc":"暂停营业","r":[13.1,14.6,14.2,15.5,15.2,17.0,16.7,18.1,17.8,20.9,20.4,22.7,24.3,24.3,28.2,28.2,30.5,30.3,33.1,34.6,33.7,35.4,34.8,37.1,39.5,38.0,40.7,39.7,41.5,39.7,40.3,39.2,40.5,40.7,38.6,37.9,36.6,38.5,39.3,38.3,40.3,38.3,41.4,39.1,41.5,39.3,40.6,41.1,39.5,41.9,40.3,41.9,42.2,40.9,42.6,40.9,41.1,42.1,39.7,40.6,37.9,37.4,37.0,34.8,34.4,31.5,32.9,33.3,31.1,30.9,28.8,30.4,31.1,28.5,29.9,28.3,29.2,29.0,27.4,28.5,27.4,27.9,26.9,27.2,27.8,26.2,26.4,25.1,25.7,26.8,24.8,24.9,24.0,23.7,24.3,22.5,24.1,23.3,23.2,24.2,22.7,22.9,21.5,22.1,22.3,21.3,21.0,20.0,20.0,20.3,18.9,18.6,17.7,17.6,17.2,16.2,15.2,14.1,13.6,12.4],"y":[13.7,15.6,16.6,16.1,17.7,17.0,19.7,21.9,21.8,24.2,24.0,25.9,27.5,27.3,29.4,28.7,30.7,30.3,32.0,31.1,32.4,34.7,34.5,36.3,34.9,34.7,36.8,34.9,37.3,35.9,37.3,39.9,38.6,40.5,39.1,40.7,41.4,39.4,40.6,38.4,38.9,39.3,37.7,38.5,37.1,38.1,38.6,36.4,37.5,35.4,35.8,36.1,34.1,34.7,32.2,32.2,32.3,31.1,32.4,30.4,32.0,30.7,32.3,33.9,32.3,33.0,30.8,31.2,29.8,30.7,32.4,31.3,32.9,31.3,32.5,33.9,32.7,33.0,31.5,32.2,32.2,30.5,30.4,28.7,27.9,29.4,27.8,27.9,26.3,26.7,25.9,24.2,24.4,22.7,23.2,23.0,22.1,21.8,20.6,20.9,21.6,20.6,21.2,20.4,20.1,19.3,18.5,18.3,17.0,17.6,16.8,17.2,16.1,15.6,15.5,15.0,14.8,14.3,13.7,12.7]},{"id":2,"name":"2F 餐厅","open":1,"closeDesc":"暂停营业","r":[5.7,6.6,6.6,6.6,6.6,8.3,8.3,9.1,8.9,9.4,9.1,11.7,14.0,13.4,13.4,12.9,14.3,14.0,15.7,16.9,16.3,18.9,18.9,18.3,18.9,17.7,18.0,17.7,18.9,17.4,17.4,16.3,15.7,17.7,17.4,19.1,18.3,18.6,20.0,18.3,19.7,19.1,20.9,19.4,21.7,21.1,20.6,21.7,21.7,21.4,21.1,21.7,21.7,20.6,20.0,19.4,20.6,20.6,18.3,18.6,17.7,17.4,17.1,14.9,15.7,15.7,16.3,15.4,14.6,15.4,14.0,13.4,14.9,13.7,14.6,13.4,15.4,16.0,14.9,15.4,15.4,17.1,16.3,16.3,16.3,16.0,16.0,15.7,16.9,18.0,17.1,16.6,15.7,14.9,12.3,11.7,11.1,9.7,10.9,9.1,8.6,8.0,7.7,7.4,6.9,6.0,5.4,4.3,3.7,3.1,2.9,2.9,2.3,2.0,2.0,1.7,0.6,0.3,0.3,0.0],"y":[6.0,6.0,6.9,6.9,6.6,6.6,8.3,8.3,7.7,8.0,7.7,8.3,9.7,9.7,12.0,12.0,12.3,11.7,14.6,14.6,15.4,15.7,15.7,18.0,17.4,17.4,18.6,17.4,17.7,17.4,16.9,17.1,15.4,15.7,15.1,15.1,14.9,12.6,12.9,12.6,12.3,14.3,12.6,14.0,12.6,14.3,14.9,14.3,16.0,15.4,17.1,16.9,15.7,16.9,15.7,16.6,17.7,16.9,17.7,17.4,16.9,15.1,15.7,14.9,14.0,14.6,13.4,12.9,11.1,11.1,12.0,11.1,12.6,11.4,12.0,12.9,11.4,12.6,12.0,12.6,13.7,12.6,14.0,14.0,13.4,13.4,12.9,13.4,12.9,12.9,13.4,12.6,12.9,11.7,11.1,11.7,10.3,10.0,9.1,8.6,7.7,6.9,7.1,6.9,6.0,5.4,5.1,5.1,4.9,4.9,2.9,1.7,1.4,1.4,0.9,0.9,0.9,0.9,0.9,0.6]},{"id":3,"name":"2F 民族风味餐厅","open":1,"closeDesc":"","r":[11.5,13.5,14.6,17.7,15.6,16.7,15.6,18.8,18.8,26.0,25.0,26.0,30.2,30.2,31.2,31.2,32.3,32.3,33.3,37.5,37.5,36.5,34.4,32.3,31.2,32.3,32.3,29.2,26.0,22.9,25.0,22.9,22.9,25.0,25.0,31.2,30.2,32.3,34.4,33.3,34.4,33.3,37.5,37.5,38.5,37.5,39.6,42.7,40.6,43.8,40.6,43.8,42.7,39.6,35.4,33.3,35.4,38.5,35.4,35.4,34.4,38.5,37.5,37.5,37.5,34.4,33.3,30.2,26.0,30.2,29.2,29.2,36.5,36.5,36.5,35.4,36.5,34.4,32.3,31.2,29.2,30.2,30.2,29.2,29.2,29.2,29.2,29.2,27.1,24.0,21.9,20.8,16.7,15.6,17.7,13.5,13.5,12.5,12.5,14.6,11.5,10.4,10.4,10.4,10.4,12.5,14.6,14.6,14.6,14.6,13.5,12.5,12.5,9.4,9.4,8.3,8.3,7.3,7.3,5.2],"y":[24.0,28.1,28.1,28.1,25.0,25.0,28.1,28.1,28.1,27.1,27.1,28.1,29.2,29.2,30.2,28.1,28.1,26.0,33.3,32.3,32.3,37.5,36.5,38.5,36.5,37.5,40.6,40.6,41.7,40.6,40.6,40.6,39.6,37.5,37.5,40.6,39.6,33.3,34.4,31.2,34.4,34.4,34.4,36.5,35.4,35.4,32.3,31.2,31.2,29.2,29.2,30.2,29.2,31.2,27.1,26.0,26.0,24.0,25.0,18.8,16.7,16.7,12.5,14.6,16.7,19.8,19.8,24.0,24.0,25.0,29.2,29.2,27.1,27.1,27.1,27.1,24.0,24.0,22.9,24.0,25.0,25.0,26.0,24.0,21.9,19.8,17.7,14.6,14.6,15.6,14.6,13.5,16.7,15.6,16.7,17.7,17.7,19.8,18.8,17.7,17.7,16.7,16.7,15.6,14.6,12.5,12.5,12.5,8.3,9.4,8.3,8.3,6.2,6.2,4.2,4.2,4.2,2.1,2.1,2.1]}]},{"id":200,"name":"第二餐厅","isOpen":1,"img":"https://api.sjtu.edu.cn/v1/file/e939d111-91c6-418d-b996-9bb3a35eba48","note":"","schedule":"非开放时段","subs":[{"id":5,"name":"1F 餐厅","open":1,"closeDesc":"","r":[11.9,12.2,11.9,12.9,12.8,14.8,14.5,16.9,17.0,20.7,20.2,22.9,25.9,25.5,28.0,27.6,30.4,29.6,31.4,33.6,33.0,35.5,34.2,37.0,38.3,37.2,38.7,36.4,36.8,35.2,38.7,36.8,40.2,43.0,40.5,42.4,41.1,43.1,44.1,42.4,43.4,42.1,43.5,41.5,42.8,40.6,42.1,43.5,41.8,43.0,39.9,39.7,39.3,37.2,38.6,36.2,37.2,37.7,36.1,37.4,34.6,36.7,37.2,36.1,38.4,37.1,40.5,41.1,39.4,40.6,38.9,41.1,42.1,40.5,41.2,39.6,40.0,40.8,38.6,39.0,36.8,35.5,34.3,34.8,34.5,31.7,30.2,28.3,27.6,28.3,26.2,27.3,25.2,25.2,26.2,25.1,26.7,25.2,24.9,25.2,24.6,24.6,22.6,23.2,24.3,23.8,24.6,23.8,23.9,24.3,22.9,22.9,21.3,21.0,20.5,19.1,18.6,18.3,17.7,18.9],"y":[10.1,11.4,13.2,12.9,14.2,14.1,15.5,16.6,16.1,17.3,17.2,18.6,21.3,20.8,22.1,21.7,23.9,23.8,26.5,25.7,26.5,28.1,27.7,30.4,29.5,31.1,32.3,30.8,34.0,33.4,35.6,36.1,34.6,35.5,34.3,35.2,37.0,34.8,37.2,36.1,36.1,37.8,36.1,36.8,35.5,36.7,38.0,36.4,36.7,35.0,36.5,38.7,37.2,38.4,37.0,36.5,37.4,35.5,35.9,34.8,35.5,33.0,32.8,33.9,32.1,33.6,32.0,31.8,30.1,30.1,29.9,28.6,28.7,27.6,29.6,30.1,28.1,28.9,27.1,28.6,30.1,28.3,28.9,27.3,26.8,27.7,26.5,27.1,25.8,25.7,26.1,24.8,25.5,23.0,23.3,25.1,23.8,24.8,23.8,23.6,23.5,22.3,23.6,22.7,24.2,24.6,23.6,24.8,24.1,24.6,23.9,24.8,23.9,23.2,22.7,21.3,21.3,19.8,19.4,19.4]},{"id":6,"name":"1F 西餐厅","open":1,"closeDesc":"","r":[10.9,11.3,11.3,12.2,11.7,13.0,12.6,13.0,12.6,14.8,13.5,13.9,17.4,17.4,18.7,18.7,20.4,19.1,22.6,23.9,22.2,24.8,23.9,26.5,27.8,27.4,29.6,28.3,30.9,30.0,32.6,30.4,32.2,36.1,34.8,36.5,34.4,36.5,37.0,35.6,35.6,34.4,34.4,32.6,34.4,33.0,33.5,33.5,30.9,32.2,30.4,32.6,31.3,29.6,30.0,28.7,28.3,28.7,27.0,25.6,24.4,25.2,26.5,25.2,27.0,25.6,26.5,25.2,24.8,27.8,26.1,27.8,28.7,27.4,27.0,26.1,27.8,29.1,29.1,29.1,28.7,29.6,27.4,27.8,29.6,28.7,30.0,28.3,26.5,23.5,22.2,22.6,21.3,21.7,23.5,23.0,24.4,22.2,22.6,22.6,21.3,23.5,21.7,22.6,22.2,20.4,20.9,20.9,22.2,22.6,22.2,22.6,21.7,20.9,21.3,19.1,19.1,19.1,18.7,17.4],"y":[7.8,9.6,8.7,8.7,11.7,11.3,13.9,16.1,15.2,15.7,15.7,17.0,18.7,18.7,19.1,19.1,20.0,19.1,21.7,20.9,23.9,25.2,24.8,24.4,21.7,23.0,23.9,23.0,25.6,25.6,27.0,27.4,27.4,29.6,28.7,30.4,30.4,28.3,27.4,25.2,26.5,29.1,27.8,30.0,29.6,31.3,31.3,30.4,31.7,29.1,30.4,32.6,30.9,33.5,31.3,32.6,33.5,33.0,36.5,36.1,36.5,34.4,33.5,32.6,30.9,31.3,29.1,27.8,27.4,27.4,26.1,24.4,23.9,22.6,24.4,25.2,24.8,24.4,21.7,21.7,24.4,23.5,24.4,23.9,25.2,26.1,25.2,25.2,23.9,25.6,26.1,24.8,24.4,22.6,22.2,23.0,22.2,23.0,22.2,23.5,23.0,22.2,20.4,19.6,18.7,21.7,20.4,20.0,19.6,19.6,19.1,20.0,20.0,20.4,21.3,20.0,18.7,17.4,18.3,17.8]},{"id":7,"name":"2F 教工餐厅","open":1,"closeDesc":"暂停营业","r":[5.7,6.8,6.8,7.1,7.1,8.2,7.9,8.9,8.9,10.0,10.4,12.5,15.0,15.0,15.4,16.1,17.5,17.1,17.1,19.6,19.3,19.6,18.9,19.6,20.0,18.9,20.7,21.1,22.1,20.7,22.9,21.1,21.1,21.4,20.0,20.7,20.4,21.8,23.6,22.5,22.1,21.4,23.2,21.8,24.3,22.9,23.2,24.6,23.6,23.6,22.1,21.8,22.1,21.1,24.6,23.9,25.0,24.6,22.9,23.6,23.2,22.1,22.9,20.7,21.4,19.3,20.4,22.1,20.7,20.7,20.7,21.8,22.1,18.9,18.6,16.4,17.5,16.8,16.1,16.4,15.7,17.1,16.4,16.8,16.4,15.4,13.6,11.8,12.5,12.1,11.1,10.4,10.4,8.9,8.6,7.9,7.1,6.8,6.4,4.6,3.6,3.2,2.5,2.1,2.1,1.8,1.4,1.4,1.1,0.7,0.7,0.4,0.4,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"y":[4.6,5.7,6.1,6.1,8.6,8.2,8.9,10.0,9.6,9.6,9.3,10.7,12.1,12.1,15.0,15.0,16.4,16.4,17.1,16.4,16.8,16.8,16.4,16.1,15.0,16.4,16.4,16.1,17.5,16.4,18.2,20.0,18.6,17.9,16.4,18.9,19.3,19.3,22.1,22.1,23.9,25.0,23.9,23.6,22.5,24.3,23.9,23.2,25.0,23.6,20.7,21.1,20.7,20.7,18.6,20.4,20.7,18.2,19.6,18.9,18.6,17.5,20.0,21.4,20.0,21.1,20.4,18.6,18.2,18.2,18.6,17.9,18.2,16.4,16.4,16.4,15.0,15.0,13.6,14.3,13.6,11.1,9.3,8.2,8.6,8.6,8.6,8.6,8.2,7.9,7.5,7.1,6.1,5.7,5.4,4.6,3.9,3.6,3.2,1.8,1.4,1.4,1.1,0.4,0.4,0.4,0.4,0.4,0.4,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]},{"id":8,"name":"2F 大众餐厅","open":1,"closeDesc":"","r":[1.9,2.1,2.1,2.3,2.3,2.9,3.1,3.7,3.5,3.9,4.1,4.5,4.3,4.1,4.8,4.5,4.3,4.5,4.5,4.5,4.7,4.8,4.8,5.0,5.2,5.0,5.0,5.0,4.8,4.7,5.8,5.4,5.8,6.0,5.2,5.4,4.8,5.2,6.4,6.6,7.0,6.6,7.0,6.6,7.0,6.8,6.8,7.0,6.6,6.8,6.4,7.0,7.0,7.0,7.2,7.0,6.6,6.4,5.8,5.2,5.0,5.0,5.2,4.7,4.5,4.3,4.5,4.3,4.3,3.7,3.1,2.7,3.1,2.9,2.7,2.7,2.9,2.9,2.9,3.5,3.3,2.7,2.7,2.9,2.5,2.5,2.1,2.1,2.1,1.9,1.9,2.3,1.9,1.9,1.9,1.9,1.9,1.7,1.6,1.4,1.4,1.6,1.4,1.4,1.4,1.6,1.6,1.4,1.4,1.2,1.2,1.2,1.0,1.0,1.0,0.8,0.8,0.8,0.4,0.4],"y":[1.9,1.9,1.9,1.9,1.9,1.7,1.9,1.9,1.9,2.1,2.1,2.1,2.3,2.5,2.9,2.7,2.9,2.9,2.9,2.9,3.1,3.9,3.7,4.1,4.1,4.7,4.3,4.7,4.7,4.7,5.2,5.6,5.4,5.6,5.2,5.4,5.4,5.2,5.4,5.0,5.4,4.8,4.8,4.7,4.3,4.8,5.0,4.5,4.3,3.9,4.5,4.1,3.9,3.5,3.3,3.1,3.1,2.7,2.7,2.5,2.7,2.7,2.7,2.7,2.5,2.7,2.5,3.1,3.1,3.3,3.3,3.3,3.5,3.5,3.7,3.7,3.7,3.5,3.5,3.7,3.5,3.5,3.9,3.5,3.1,2.9,2.7,2.5,2.1,2.1,1.9,2.1,1.9,1.7,1.9,1.9,1.9,1.9,2.1,1.7,1.7,1.6,1.2,1.2,1.4,1.4,1.0,1.0,1.0,0.8,0.8,0.6,0.6,0.4,0.4,0.4,0.4,0.4,0.2,0.2]},{"id":9,"name":"2F 陈香贵兰州牛肉面","open":1,"closeDesc":"","r":[0.8,1.7,1.7,1.7,1.7,1.7,1.7,1.7,1.7,2.5,2.5,3.3,5.0,5.0,10.0,10.0,13.3,13.3,18.3,20.8,20.8,20.8,20.8,20.8,25.0,25.0,28.3,28.3,30.8,30.0,30.8,30.8,31.7,28.3,27.5,27.5,24.2,26.7,26.7,25.0,30.0,30.0,32.5,30.8,30.8,29.2,29.2,28.3,27.5,30.8,29.2,30.8,29.2,29.2,30.0,27.5,30.0,29.2,29.2,29.2,26.7,27.5,29.2,28.3,28.3,25.8,25.8,27.5,24.2,26.7,25.8,24.2,24.2,23.3,25.0,23.3,23.3,24.2,20.0,20.8,18.3,19.2,17.5,17.5,20.8,20.0,20.8,20.0,16.7,18.3,18.3,19.2,19.2,21.7,19.2,18.3,15.8,15.8,15.8,16.7,15.0,14.2,13.3,15.0,13.3,11.7,12.5,12.5,11.7,13.3,12.5,13.3,11.7,12.5,15.8,15.0,17.5,17.5,16.7,15.8],"y":[3.3,3.3,3.3,3.3,8.3,6.7,5.0,5.8,5.8,5.8,5.8,9.2,9.2,9.2,10.0,10.0,11.7,11.7,11.7,11.7,11.7,15.8,15.8,11.7,11.7,12.5,14.2,13.3,15.8,15.8,15.0,17.5,18.3,20.8,20.0,20.0,21.7,21.7,22.5,22.5,25.0,25.0,24.2,24.2,24.2,24.2,25.0,22.5,21.7,20.8,19.2,18.3,16.7,15.0,14.2,12.5,11.7,10.8,13.3,10.0,10.8,9.2,13.3,15.0,14.2,15.8,15.0,15.0,15.0,20.0,24.2,22.5,23.3,23.3,25.0,25.8,25.8,26.7,25.8,28.3,27.5,25.8,24.2,22.5,25.0,29.2,29.2,30.8,28.3,29.2,26.7,25.8,26.7,25.0,26.7,25.8,24.2,23.3,20.8,20.8,20.0,20.0,20.0,18.3,17.5,15.8,14.2,12.5,10.0,10.8,10.8,11.7,10.8,10.8,11.7,11.7,12.5,12.5,12.5,12.5]},{"id":10,"name":"3F 绿园餐厅","open":1,"closeDesc":"","r":[5.7,5.7,5.9,6.6,6.6,7.1,7.1,8.5,8.3,11.1,10.9,12.1,15.2,15.2,15.6,14.9,15.9,15.6,17.1,18.7,18.5,20.1,19.2,21.1,23.0,22.3,23.0,21.6,21.6,20.6,21.6,20.4,19.7,22.3,21.3,23.5,22.5,24.4,23.9,23.0,23.5,21.6,22.3,20.6,21.8,20.6,21.1,21.8,21.1,23.0,22.5,21.8,21.1,19.7,18.7,17.1,17.1,16.4,15.9,15.6,14.9,16.1,15.2,14.4,14.2,14.0,15.4,16.4,14.4,14.9,14.4,15.6,17.3,16.4,17.8,16.8,17.1,17.8,17.1,18.0,17.3,19.2,18.5,19.9,20.4,19.2,19.2,18.0,18.2,18.2,17.8,18.2,17.3,16.8,17.1,16.6,16.8,15.9,15.9,16.4,14.7,13.5,12.6,13.0,12.8,11.8,11.8,11.6,10.4,10.2,9.2,8.3,7.8,7.1,6.9,6.4,6.6,6.6,6.2,5.2],"y":[4.3,4.5,5.5,5.2,5.2,5.2,6.6,7.1,6.9,7.3,7.1,8.3,11.1,11.4,12.3,12.1,13.5,13.3,13.5,12.6,13.5,15.6,14.7,17.1,17.1,18.0,19.2,19.4,19.7,19.7,19.2,18.7,17.1,18.7,17.8,17.5,19.2,19.0,19.7,19.2,21.6,20.4,18.5,19.2,17.8,18.2,18.2,18.0,18.7,18.7,20.4,21.6,19.7,21.1,20.4,20.9,22.5,21.6,23.0,20.1,20.1,19.7,19.4,19.9,19.4,20.9,20.6,21.1,20.4,20.1,19.4,18.5,19.2,17.5,19.4,18.7,17.1,16.8,15.6,15.9,16.4,16.1,15.9,15.2,14.7,13.3,11.6,12.8,11.8,12.8,13.5,12.8,11.8,10.7,10.4,10.2,9.7,9.9,9.5,9.5,9.9,9.2,9.7,9.2,9.5,9.7,8.8,8.5,7.6,7.6,6.6,5.9,5.5,5.2,5.0,5.0,5.0,5.0,5.0,4.5]}]},{"id":300,"name":"第三餐厅","isOpen":1,"img":"https://api.sjtu.edu.cn/v1/file/d13f0099-b9a9-445e-b5ca-bda449ca69b3","note":"","schedule":"非开放时段","subs":[{"id":11,"name":"1F 餐厅","open":1,"closeDesc":"暂停营业","r":[17.6,17.4,17.0,18.8,17.4,19.2,18.1,20.6,20.2,24.7,24.2,26.9,28.5,27.8,30.3,29.4,32.3,31.2,34.0,36.0,35.8,39.2,37.8,38.2,39.6,37.3,39.6,38.0,39.1,37.1,39.4,38.5,40.1,42.5,39.6,39.8,37.8,40.9,41.9,39.8,40.9,38.5,42.5,40.5,41.4,38.9,40.1,42.5,41.0,41.4,39.8,40.9,41.9,40.7,41.9,39.6,39.8,40.3,38.5,39.4,36.7,37.8,38.4,36.9,38.4,36.6,38.0,38.5,37.1,36.9,35.1,35.8,36.9,35.3,35.8,34.2,34.0,35.7,33.7,35.7,33.7,34.4,32.6,33.0,34.4,32.3,33.9,32.1,32.6,31.9,30.1,31.9,29.4,30.1,30.5,29.4,30.6,28.7,27.2,27.6,26.3,26.3,25.1,24.0,23.3,21.5,21.7,21.0,21.1,21.7,19.5,20.4,19.5,20.1,19.5,18.1,18.1,17.2,17.0,16.7],"y":[12.2,13.1,15.1,14.9,15.2,14.9,16.3,17.9,18.3,19.2,18.6,21.3,22.8,22.4,24.7,23.5,25.4,24.2,27.8,27.1,29.8,32.6,31.5,34.0,33.1,33.3,34.8,33.3,34.2,32.8,32.3,34.0,33.0,34.4,32.8,33.5,34.6,32.3,34.6,31.9,32.6,34.4,33.0,33.7,32.8,35.0,35.8,34.4,35.5,34.8,36.4,37.8,36.0,36.2,34.8,35.0,35.7,34.0,34.0,31.5,31.5,30.3,31.0,31.7,30.3,31.0,29.8,30.8,28.5,29.6,31.4,29.6,31.2,29.8,31.0,32.4,30.3,32.3,31.4,33.1,33.9,32.6,33.7,32.3,31.5,33.5,31.9,31.5,29.8,29.4,29.4,28.1,28.3,26.5,25.4,24.7,22.9,23.8,22.6,21.9,22.0,20.6,20.2,19.4,18.6,17.7,17.0,18.3,17.6,16.7,15.6,15.4,14.9,16.3,15.2,14.9,13.8,12.5,12.2,11.7]},{"id":12,"name":"2F 外婆桥","open":1,"closeDesc":"","r":[4.3,4.3,4.5,4.8,4.7,5.5,5.9,7.6,7.9,7.9,7.8,9.7,10.5,10.7,11.9,11.9,13.1,12.9,14.0,14.5,14.7,15.2,14.8,15.7,16.0,15.0,15.7,15.0,15.5,14.3,14.7,14.0,14.5,15.3,14.8,15.5,14.3,14.8,16.2,16.2,17.2,16.6,17.4,16.4,17.6,16.4,17.2,17.2,16.7,17.9,16.7,18.4,18.3,17.2,18.8,17.8,18.1,18.1,16.9,17.6,16.4,17.1,17.4,16.6,16.0,14.7,15.3,16.4,15.5,15.7,14.5,14.8,15.7,14.8,13.8,13.4,13.4,13.8,13.3,12.9,11.7,11.2,10.7,11.4,12.1,11.0,11.0,10.0,9.7,9.5,8.3,8.1,7.4,7.4,7.4,6.9,6.4,5.9,6.5,7.2,7.1,7.1,6.7,6.4,6.5,5.9,6.2,5.3,5.7,5.7,5.3,5.2,5.2,5.0,4.7,4.5,4.5,4.1,4.0,3.8],"y":[2.9,3.8,3.8,3.6,4.0,4.0,4.5,5.3,5.9,6.7,6.9,7.4,7.6,7.8,7.9,7.8,8.4,8.3,9.7,9.7,9.5,9.8,9.7,10.2,9.8,9.5,10.3,9.7,10.0,9.0,9.7,10.2,10.2,10.9,10.5,10.2,10.0,9.5,10.5,10.2,10.9,11.7,11.4,12.6,12.2,13.1,13.6,13.1,13.3,12.6,12.2,13.8,13.4,13.4,13.3,14.5,15.2,14.5,15.2,14.5,15.7,14.8,14.8,15.2,14.0,14.3,13.3,12.9,12.6,12.8,12.4,11.4,10.9,10.3,10.7,10.7,9.7,9.0,8.1,9.3,9.1,8.8,8.6,7.9,7.8,7.9,7.6,7.9,7.8,8.3,8.8,8.4,9.1,8.8,8.4,8.4,8.3,8.1,7.4,6.9,7.1,6.9,7.1,6.7,6.7,7.2,7.1,6.7,5.9,6.2,5.7,5.5,5.0,4.8,4.7,4.3,4.3,4.0,4.0,3.6]},{"id":13,"name":"2F 清真餐厅","open":1,"closeDesc":"","r":[4.0,6.0,6.0,7.5,7.5,7.5,7.0,7.5,7.5,9.0,9.0,10.0,11.5,11.0,11.5,11.5,11.0,11.0,13.0,13.5,12.0,12.0,11.0,13.5,14.5,14.5,14.5,13.5,13.5,13.5,13.0,11.0,11.0,11.0,11.0,12.0,11.5,11.5,9.5,9.0,10.0,8.5,8.0,7.5,10.0,9.5,10.5,12.0,12.0,12.5,12.5,13.5,14.0,14.0,15.0,15.0,14.5,15.5,15.0,15.0,14.5,14.5,15.5,13.0,12.0,11.5,12.0,11.5,11.5,11.5,10.5,11.0,11.0,9.5,10.0,9.5,8.5,8.5,8.0,8.0,8.0,7.0,7.0,6.5,6.0,5.5,4.5,4.0,4.5,5.0,4.5,4.5,4.0,3.5,3.5,3.5,3.5,3.5,3.0,3.0,3.0,4.5,4.5,4.5,5.0,4.5,5.0,4.5,3.5,3.0,3.0,3.0,3.0,3.0,3.5,3.5,3.5,3.5,4.0,4.5],"y":[3.5,4.5,4.5,4.5,5.5,5.0,5.5,6.5,6.5,7.5,7.0,7.0,8.0,7.5,8.0,8.0,9.0,8.5,10.0,9.0,10.0,11.0,11.0,11.5,11.0,12.5,12.5,11.5,11.0,11.0,11.0,12.5,11.5,12.5,11.5,11.5,10.5,9.5,8.5,8.0,9.0,10.0,9.5,9.0,8.0,9.0,10.0,9.5,10.0,10.0,10.0,9.5,8.5,10.5,10.5,10.5,12.0,12.0,13.0,12.5,12.0,11.5,12.0,12.0,10.5,10.0,10.0,9.5,9.0,10.0,10.0,9.5,8.5,8.0,7.5,7.5,6.5,6.0,6.0,5.5,6.0,6.0,5.5,5.5,5.0,5.5,5.5,5.5,5.0,4.5,4.5,4.5,5.0,5.0,5.0,4.5,4.5,3.0,2.5,2.0,2.0,2.0,2.5,2.5,2.0,2.0,1.5,1.0,1.0,1.0,1.0,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5]}]},{"id":400,"name":"第四餐厅","isOpen":1,"img":"https://api.sjtu.edu.cn/v1/file/400e38f1-82e7-4dbf-a18b-bce00c7babce","note":"","schedule":"非开放时段","subs":[{"id":14,"name":"1F 餐厅","open":0,"closeDesc":"暂停营业，预计元旦开放","r":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"y":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]},{"id":15,"name":"2F 餐厅","open":1,"closeDesc":"","r":[10.5,11.4,11.1,12.6,12.1,13.4,12.7,15.5,15.4,17.9,17.6,18.2,20.6,20.2,21.9,21.4,22.9,22.6,24.9,27.3,26.5,29.3,27.7,28.4,29.7,28.4,30.6,29.3,30.8,29.8,32.2,30.8,32.5,33.5,32.6,33.0,31.3,32.5,33.4,31.8,32.8,31.0,33.7,32.4,32.9,30.4,31.6,32.6,31.0,32.0,30.2,32.9,33.2,31.7,33.7,32.6,33.7,34.2,33.4,33.0,31.6,32.6,34.2,33.4,33.7,31.2,31.6,34.1,32.5,33.7,31.8,32.9,34.6,32.8,33.7,31.3,31.0,32.6,31.6,33.4,32.1,32.2,30.5,31.6,31.8,30.1,31.0,29.3,28.6,29.4,27.4,26.9,25.3,25.6,25.2,24.4,24.7,22.7,22.8,22.8,21.4,21.6,19.8,19.6,19.9,18.2,17.4,16.6,16.3,15.8,15.1,14.6,13.5,12.7,13.7,13.1,12.5,11.7,11.0,10.1],"y":[10.9,12.6,13.0,12.9,13.5,13.0,15.0,17.1,16.4,17.2,16.6,16.3,18.0,17.1,19.0,18.2,19.9,19.4,21.5,20.4,22.6,24.8,24.5,26.3,25.5,25.7,28.0,26.3,27.9,26.9,28.4,29.8,28.0,29.7,28.1,29.2,30.0,28.2,28.9,27.3,29.4,31.6,30.0,33.7,32.6,35.4,36.1,34.6,35.3,34.2,36.6,37.3,35.5,35.8,34.8,34.6,34.8,33.4,34.1,32.5,32.1,29.2,28.2,29.3,27.3,27.2,26.0,26.0,24.8,24.3,25.5,24.1,25.2,24.5,26.9,28.8,28.0,29.4,28.1,28.0,27.7,26.8,27.3,25.1,24.9,25.1,24.5,25.2,24.4,24.0,24.4,23.1,24.7,22.0,22.0,22.0,20.0,20.7,20.0,21.1,22.4,20.8,21.1,20.2,20.8,21.1,20.2,19.8,19.1,19.8,18.8,18.4,16.6,16.4,16.7,15.9,15.8,15.0,14.6,13.4]}]},{"id":500,"name":"第五餐厅","isOpen":1,"img":"https://api.sjtu.edu.cn/v1/file/e9910c0a-3e21-48b3-b088-226153557ecb","note":"","schedule":"非开放时段","subs":[{"id":17,"name":"1F 餐厅","open":1,"closeDesc":"","r":[0.7,0.7,1.3,2.0,2.6,3.3,3.9,4.6,4.6,4.6,4.6,5.2,6.5,8.5,9.2,11.1,12.4,15.0,15.7,15.7,16.3,16.3,16.3,15.7,15.0,14.4,13.7,14.4,14.4,15.0,14.4,13.1,11.1,10.5,8.5,8.5,5.9,5.2,5.9,5.2,4.6,3.9,3.9,3.9,5.2,5.2,4.6,4.6,3.9,3.9,3.9,3.9,3.9,3.9,2.6,2.6,2.6,1.3,1.3,2.0,2.0,2.0,2.0,0.7,0.7,0.7,0.7,0.7,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,0.7,0.7,0.7,0.7,0.7,0.7,1.3,2.0,2.0,2.0,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,0.7,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"y":[0.0,0.0,0.7,2.0,2.6,3.9,4.6,4.6,5.9,5.9,7.2,9.2,11.1,11.1,11.1,11.1,13.1,14.4,14.4,15.0,17.6,18.3,17.6,17.6,17.6,17.0,16.3,16.3,15.0,15.0,13.7,12.4,11.1,11.8,11.8,11.8,9.8,8.5,8.5,7.8,5.2,4.6,4.6,3.9,3.9,3.3,3.3,3.3,3.3,3.3,3.3,2.6,2.0,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,0.7,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.7,0.7,0.7,0.7,0.7,0.7]},{"id":18,"name":"1F 东湖面馆","open":1,"closeDesc":"","r":[3.3,2.6,2.0,2.6,2.6,3.3,3.3,4.6,4.6,4.6,4.6,6.6,7.2,7.2,9.9,9.9,11.2,11.2,12.5,14.5,14.5,15.1,15.1,14.5,13.8,13.8,12.5,12.5,12.5,11.8,12.5,12.5,14.5,15.1,13.8,14.5,12.5,13.2,13.2,11.8,12.5,12.5,13.8,13.8,14.5,14.5,16.4,17.8,15.8,17.8,16.4,17.8,17.1,16.4,16.4,14.5,13.8,13.8,13.8,12.5,12.5,12.5,11.8,11.2,11.8,9.9,9.2,8.6,7.9,7.2,5.3,6.6,6.6,6.6,7.9,7.9,8.6,9.9,9.9,11.2,11.2,11.8,11.2,11.8,13.2,13.2,13.8,13.8,14.5,15.1,14.5,13.8,13.2,13.2,13.8,12.5,11.2,10.5,9.2,9.9,9.2,9.2,7.9,7.9,7.2,7.2,6.6,5.3,5.3,5.9,5.9,5.3,4.6,4.0,5.3,5.3,5.3,5.3,4.0,4.0],"y":[0.0,0.0,1.3,1.3,2.6,2.6,4.0,5.3,5.3,5.9,5.9,6.6,7.2,7.2,8.6,8.6,10.5,10.5,11.2,11.2,12.5,12.5,11.2,11.2,10.5,10.5,10.5,9.2,8.6,8.6,8.6,9.9,9.2,9.2,7.9,7.2,5.9,5.9,5.9,5.3,4.6,4.6,4.6,5.9,4.6,5.9,7.9,7.9,10.5,9.9,11.8,10.5,10.5,11.2,11.2,11.8,13.2,12.5,13.2,13.2,15.8,15.8,15.1,15.1,15.1,14.5,13.2,11.8,10.5,9.9,10.5,10.5,10.5,10.5,12.5,11.8,11.2,11.2,10.5,9.2,9.2,8.6,7.9,7.9,7.9,8.6,9.2,8.6,8.6,9.9,9.2,7.9,7.2,5.3,5.9,6.6,5.9,6.6,6.6,7.2,7.2,7.2,7.9,7.9,7.9,8.6,7.9,6.6,5.9,6.6,6.6,6.6,5.9,5.9,5.3,5.3,5.3,5.3,5.3,4.6]},{"id":19,"name":"2F 教工餐厅","open":1,"closeDesc":"暂停营业","r":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"y":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]},{"id":20,"name":"2F 无田有果","open":1,"closeDesc":"暂停营业","r":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"y":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]},{"id":37,"name":"2F 大众餐厅","open":1,"closeDesc":"暂停营业","r":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"y":[1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0]}]},{"id":600,"name":"第六餐厅","isOpen":1,"img":"https://api.sjtu.edu.cn/v1/file/5e4b8f3d-1f45-4d44-a781-c415faeeca01","note":"","schedule":"非开放时段","subs":[{"id":21,"name":"1F 餐厅","open":1,"closeDesc":"","r":[6.7,6.1,5.8,6.4,6.4,7.0,7.0,8.2,7.9,8.8,8.8,9.2,9.2,9.4,11.3,11.0,10.4,10.1,11.0,12.2,11.0,13.1,12.2,14.0,14.3,13.7,14.9,14.3,15.2,14.6,16.2,15.8,18.3,19.5,18.6,20.4,20.1,21.6,21.0,20.1,20.4,19.2,18.9,18.6,19.2,18.3,16.8,17.4,16.8,17.4,15.2,15.2,17.1,15.6,14.9,13.7,14.0,14.3,14.9,15.8,14.0,14.3,15.6,15.8,17.7,18.0,18.3,19.5,18.3,19.8,18.9,18.9,18.0,17.4,17.7,17.1,17.4,18.0,17.4,18.0,17.4,18.6,17.4,14.9,14.9,14.0,14.3,12.5,12.5,12.2,11.9,12.2,11.3,11.9,11.6,11.0,10.7,10.1,10.7,10.4,8.8,9.2,9.2,9.2,8.5,7.9,8.2,7.3,7.6,7.0,6.4,6.1,4.9,5.8,5.8,5.5,6.1,5.2,4.6,5.2],"y":[4.9,6.4,7.3,7.6,7.9,7.9,8.8,10.1,10.1,10.7,10.4,10.7,11.6,11.0,12.2,11.9,11.9,11.0,12.2,12.5,12.2,13.7,13.4,14.0,13.4,14.0,14.3,13.7,14.3,13.7,14.3,14.0,13.7,13.7,13.1,14.6,14.9,13.4,13.4,12.5,13.1,13.1,12.5,12.5,11.9,11.9,12.2,11.9,12.8,12.2,12.8,13.1,12.5,13.7,12.8,14.6,14.9,13.7,15.6,14.9,15.6,14.9,16.8,18.3,18.6,18.6,18.3,18.0,16.8,16.8,18.0,18.0,18.0,15.8,15.2,14.6,14.9,16.8,16.2,16.5,16.8,15.6,14.3,13.1,13.7,13.1,13.1,13.7,13.1,12.8,12.5,11.9,12.2,12.2,12.5,11.9,11.0,9.2,7.9,7.9,7.0,7.0,6.7,5.8,6.1,6.1,5.8,5.5,4.9,4.6,4.0,4.6,4.3,4.6,4.6,4.3,4.3,4.3,4.6,4.6]},{"id":22,"name":"2F 餐厅","open":1,"closeDesc":"暂停营业","r":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"y":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]}]},{"id":700,"name":"第七餐厅","isOpen":1,"img":"https://api.sjtu.edu.cn/v1/file/f7cd685e-4efa-4346-89e8-aa5cd1c5ebe1","note":"","schedule":"非开放时段","subs":[{"id":23,"name":"1F 学生餐厅","open":1,"closeDesc":"","r":[3.2,3.2,3.2,3.2,3.2,4.0,4.0,4.4,4.4,4.4,4.4,4.8,5.7,5.7,5.2,4.8,5.2,5.2,6.8,7.3,6.8,7.3,7.3,7.7,8.1,7.7,8.1,7.7,8.9,8.5,8.5,8.1,8.1,8.1,8.1,8.1,7.3,6.5,7.7,6.8,8.1,7.3,8.5,8.1,8.9,8.5,8.9,8.1,8.1,8.1,7.7,8.1,8.9,8.9,9.7,9.7,10.1,10.5,9.7,10.1,9.3,8.5,8.1,7.3,6.5,6.0,5.7,5.7,5.7,6.5,6.0,6.0,6.0,5.7,6.0,5.2,4.4,4.4,4.0,4.0,4.0,4.0,3.6,4.0,4.8,4.8,5.7,5.7,4.8,4.8,4.4,5.2,4.4,4.0,4.4,4.4,5.2,4.8,6.0,6.0,6.0,6.0,5.7,5.7,5.7,5.2,4.8,4.8,4.8,4.8,4.0,4.0,4.0,3.6,3.6,2.8,2.8,2.0,1.2,1.2],"y":[3.2,3.2,3.2,3.2,3.2,3.2,2.8,3.2,3.2,3.2,3.2,3.6,4.4,4.4,4.8,5.2,5.7,4.4,4.8,4.0,4.4,5.7,5.7,6.0,6.0,6.8,6.5,6.5,7.3,7.3,8.1,8.1,7.3,7.3,7.3,7.3,8.5,8.1,8.9,8.9,9.3,8.9,8.5,9.7,9.7,10.5,11.7,10.9,11.7,11.3,10.5,10.5,10.1,10.5,9.7,9.7,8.9,8.1,8.5,7.7,10.1,9.7,10.5,11.7,10.9,10.9,10.1,10.5,10.1,10.1,10.9,10.9,11.3,10.5,10.9,12.1,12.1,12.1,11.3,10.5,10.9,9.7,8.5,8.1,7.7,7.3,6.5,6.5,6.5,6.8,6.0,6.0,6.0,6.0,6.5,5.7,4.8,5.2,4.8,4.8,4.0,3.6,3.2,3.2,3.2,2.8,2.8,2.8,2.4,2.8,2.8,2.4,2.0,1.6,1.6,1.6,1.2,1.2,1.2,0.8]}]}]};
+var COMMUNITY = {"generated_at":"2026-11-23","sources_policy":"只记录能给出 URL 的来源；无法核实的不要写","evidence_policy":"baseline_score 全部为 null：水源社区、小红书、知乎、大众点评、贴吧在本次抓取中均为登录墙或反爬拦截，拿不到可计数的评分样本，故不估算 1-5 分，只记录可核实的菜品与原文摘录。signature_dishes.mentions = 提及该菜品的可核实来源条数（不是帖子条数）。","blocked_channels":["水源社区 shuiyuan.sjtu.edu.cn：/latest.json、/c/*.json、/t/*.json、/search.json、/about.json 全部 HTTP 403；首页 302 跳 jAccount 单点登录，需校内账号","bbs.sjtu.edu.cn：无法连接到远程服务器（旧站已不可访问）","小红书：笔记页只返回通用前端壳（两个不同笔记返回完全相同的 97KB HTML），无正文","知乎：question / zhuanlan 均 403（含移动 UA）","大众点评：403 Forbidden；百度贴吧：403 百度安全验证","微信公众号原文：mp.weixin.qq.com 返回“环境异常，完成验证后即可继续访问”；搜狗微信只能取到摘要，/link 跳转需人工验证","微博 m.weibo.cn：HTTP 432；web.archive.org：DNS 解析失败，无法用快照兜底","B站：api 搜索 412，网页搜索页仅返回空壳"],"canteens":{"100":{"name":"第一餐饮大楼","baseline_score":null,"score_method":"null：无可计数评分样本。水源/小红书/大众点评均被拦截；仅取得 5 条官方或半官方定性描述（5 条正面、0 条负面），且全部来自宣传性文本，不足以换算 1-5 分，故不估算。","signature_dishes":[{"name":"油泼面","mentions":2,"sources":["https://ourhome.sjtu.edu.cn/article/907","https://sai.sjtu.edu.cn/cn/show/67"]},{"name":"biangbiang面","mentions":2,"sources":["https://ourhome.sjtu.edu.cn/article/907","https://sai.sjtu.edu.cn/cn/show/67"]},{"name":"豌杂面","mentions":2,"sources":["https://ourhome.sjtu.edu.cn/article/1057","https://m.toutiao.com/article/7671259174071730722/"]},{"name":"万州烤鱼","mentions":2,"sources":["https://ourhome.sjtu.edu.cn/article/1057","https://m.toutiao.com/article/7671259174071730722/"]},{"name":"鲜肉生煎","mentions":1,"sources":["https://m.toutiao.com/article/7671259174071730722/"]},{"name":"飘香鸡锅","mentions":1,"sources":["https://ourhome.sjtu.edu.cn/article/1057"]},{"name":"五芳斋小馄饨","mentions":1,"sources":["https://ourhome.sjtu.edu.cn/article/907"]}],"quotes":[{"text":"一餐米面食尤其优秀，西北的油泼面和biangbiang面、川渝的火锅米线和小面","source":"https://ourhome.sjtu.edu.cn/article/907","date":"2022-08-18"},{"text":"一餐一楼的西安面馆备受食客的喜爱，油泼面蒜香浓郁","source":"https://sai.sjtu.edu.cn/cn/show/67","date":"2024-08-21"},{"text":"养生锅（推荐!飘香鸡锅不错）","source":"https://ourhome.sjtu.edu.cn/article/1057","date":"2023-08-22"},{"text":"由于靠近教学楼，一餐在工作日饭点人流量很大，早餐种类丰富","source":"https://ourhome.sjtu.edu.cn/article/1057","date":"2023-08-22"},{"text":"软糯绵密的豌豆炖至起沙化泥","source":"https://m.toutiao.com/article/7671259174071730722/","date":"2026-08"}],"confidence":"medium","notes":"有菜品级与定性证据，无评分样本。2026 年交大师生投票“寻味交大·十大美食”中一餐占 3 席（豌杂面、万州烤鱼、鲜肉生煎），为七栋楼最多，可作为相对人气信号；但票选原文未公布票数。缺口：学生对价格/口味的具体吐槽或打分。","top10_seats":3,"top10_dishes":["豌杂面","万州烤鱼","鲜肉生煎"],"honors":null},"200":{"name":"第二餐饮大楼","baseline_score":null,"score_method":"null：无可计数评分样本；4 条正面定性描述（含“校内最受欢迎”“价格最实惠”），无负面样本，不做 1-5 换算。","signature_dishes":[{"name":"南瓜牛乳小丸子","mentions":1,"sources":["https://m.toutiao.com/article/7671259174071730722/"]},{"name":"蛋堡王（秋林阁）","mentions":1,"sources":["https://m.toutiao.com/article/7671259174071730722/"]},{"name":"新疆餐厅烤羊肉串","mentions":2,"sources":["https://ourhome.sjtu.edu.cn/article/907","https://ourhome.sjtu.edu.cn/article/1057"]},{"name":"绿园自选麻辣香锅","mentions":1,"sources":["https://ourhome.sjtu.edu.cn/article/1057"]},{"name":"蛋包饭","mentions":1,"sources":["https://m.thepaper.cn/baijiahao_9486887"]},{"name":"酸汤肥牛","mentions":1,"sources":["https://m.thepaper.cn/baijiahao_9486887"]}],"quotes":[{"text":"二餐是绝大多数交大人心中价格最实惠、口味最丰富的餐厅","source":"https://ourhome.sjtu.edu.cn/article/907","date":"2022-08-18"},{"text":"和四餐并列为校内最受欢迎的餐厅","source":"https://ourhome.sjtu.edu.cn/article/1057","date":"2023-08-22"},{"text":"三楼的绿园餐厅人气很旺，自选麻辣香锅在饭点要等上半个小时","source":"https://ourhome.sjtu.edu.cn/article/1057","date":"2023-08-22"},{"text":"二餐的早点绝对惊艳","source":"https://m.thepaper.cn/baijiahao_9486887","date":"2020-10-08"}],"confidence":"medium","notes":"七栋中定性评价最集中的一栋，“最实惠/最受欢迎/麻辣香锅要排队半小时”来自交大家园网两篇独立推文。2026 十大美食占 2 席（南瓜牛乳小丸子、蛋堡王）。缺口：无评分、无价格实拍数据。","top10_seats":2,"top10_dishes":["南瓜牛乳小丸子","蛋堡王"],"honors":null},"300":{"name":"第三餐饮大楼","baseline_score":null,"score_method":"null：仅 3 条定性描述，且无任何评分或票选信号，不估算分数。","signature_dishes":[{"name":"水饺","mentions":1,"sources":["https://ourhome.sjtu.edu.cn/article/907"]},{"name":"蒙古烤肉","mentions":1,"sources":["https://m.thepaper.cn/baijiahao_9486887"]},{"name":"黄焖鸡","mentions":1,"sources":["https://ourhome.sjtu.edu.cn/article/1057"]},{"name":"烤肉饭","mentions":1,"sources":["https://ourhome.sjtu.edu.cn/article/1057"]},{"name":"麻辣香锅","mentions":1,"sources":["https://ourhome.sjtu.edu.cn/article/1057"]}],"quotes":[{"text":"三餐有着常年更新、口味独特的水饺菜单和学校里独一无二的荷塘美景","source":"https://ourhome.sjtu.edu.cn/article/907","date":"2022-08-18"},{"text":"二楼是小吃广场，黄焖鸡、烤肉饭、麻辣香锅、铁板烧等应有尽有","source":"https://ourhome.sjtu.edu.cn/article/1057","date":"2023-08-22"},{"text":"饭后来一杯luckin coffee，再到荷塘上的曲折桥走一走","source":"https://m.thepaper.cn/baijiahao_9486887","date":"2020-10-08"}],"confidence":"low","notes":"只有官方导览类描述，2026 十大美食 0 席。未找到三餐专属官方档口页（教服集团餐饮服务栏目只收录二/四/五/六/七餐）。缺口：没有任何学生打分或吐槽，无法判断真实口碑好坏。","top10_seats":0,"top10_dishes":[],"honors":null},"400":{"name":"第四餐饮大楼","baseline_score":null,"score_method":"null：有官方荣誉与票选第 1 名，但无评分样本、无负面样本，不做 1-5 换算。","signature_dishes":[{"name":"港式烧腊烤鸭饭","mentions":3,"sources":["https://m.toutiao.com/article/7671259174071730722/","https://ourhome.sjtu.edu.cn/article/1057","https://jfjt.sjtu.edu.cn/CampusServs_View.aspx?id=89"]},{"name":"湖南小炒肉","mentions":1,"sources":["https://m.toutiao.com/article/7671259174071730722/"]},{"name":"生煎包","mentions":1,"sources":["https://ourhome.sjtu.edu.cn/article/907"]},{"name":"浏阳蒸菜","mentions":1,"sources":["https://ourhome.sjtu.edu.cn/article/907"]},{"name":"桂林米粉","mentions":1,"sources":["https://ourhome.sjtu.edu.cn/article/907"]},{"name":"成都冒菜","mentions":1,"sources":["https://m.thepaper.cn/baijiahao_9486887"]},{"name":"烧鸭叉烧双拼饭","mentions":1,"sources":["https://jfjt.sjtu.edu.cn/CampusServs_View.aspx?id=89"]}],"quotes":[{"text":"难怪无数上课地点远的本科生也一下课就往四餐跑","source":"https://ourhome.sjtu.edu.cn/article/907","date":"2022-08-18"},{"text":"连年被评为“中国百家好食堂”","source":"https://jfjt.sjtu.edu.cn/CampusServs_View.aspx?id=89","date":"官方页面"},{"text":"鸭皮酥脆金黄、鸭肉鲜嫩多汁","source":"https://m.toutiao.com/article/7671259174071730722/","date":"2026-08"},{"text":"一楼为风味餐厅，集聚各地美食，从烤鸭饭、热凉皮到口袋鸡柳、铁板饭","source":"https://ourhome.sjtu.edu.cn/article/1057","date":"2023-08-22"}],"confidence":"medium","notes":"证据最硬的一栋：官方页面称“连年被评为中国百家好食堂”，2026 十大美食票选中烤鸭饭位列第 1，共占 2 席（烤鸭饭、小炒肉）。缺口：票数、价格、负面评价。","top10_seats":2,"top10_dishes":["烧腊烤鸭饭（票选第 1）","湖南小炒肉"],"honors":"官方资料称其「连年被评为中国百家好食堂」"},"500":{"name":"第五餐饮大楼","baseline_score":null,"score_method":"null：3 条正面定性描述（含“排队最长窗口”），无评分样本，不估算分数。","signature_dishes":[{"name":"石锅豆腐","mentions":1,"sources":["https://m.toutiao.com/article/7671259174071730722/"]},{"name":"烤盘饭","mentions":1,"sources":["https://ourhome.sjtu.edu.cn/article/907"]},{"name":"东湖面馆小笼包","mentions":2,"sources":["https://ourhome.sjtu.edu.cn/article/907","https://jfjt.sjtu.edu.cn/CampusServs_View.aspx?id=88"]},{"name":"麻辣香锅","mentions":2,"sources":["https://m.thepaper.cn/baijiahao_9486887","https://ourhome.sjtu.edu.cn/article/1057"]},{"name":"无田有果火锅","mentions":2,"sources":["https://ourhome.sjtu.edu.cn/article/1057","https://jfjt.sjtu.edu.cn/CampusServs_View.aspx?id=88"]}],"quotes":[{"text":"二楼的烤盘饭每次都是排队最长的窗口","source":"https://ourhome.sjtu.edu.cn/article/907","date":"2022-08-18"},{"text":"被称为名副其实的湖景餐厅","source":"https://jfjt.sjtu.edu.cn/CampusServs_View.aspx?id=88","date":"官方页面"},{"text":"一楼风味窗口的石锅豆腐端上桌还在“滋滋”作响","source":"https://m.toutiao.com/article/7671259174071730722/","date":"2026-08"},{"text":"五餐楼上容易迷路，可以问问食堂工作人员哦","source":"https://ourhome.sjtu.edu.cn/article/1057","date":"2023-08-22"}],"confidence":"medium","notes":"菜品与场景描述较全（湖景、三楼西餐厅、火锅），2026 十大美食占 1 席（石锅豆腐）。缺口：学生评分，以及“容易迷路”之外的其他负面反馈。","top10_seats":1,"top10_dishes":["石锅豆腐"],"honors":null},"600":{"name":"第六餐饮大楼","baseline_score":null,"score_method":"null：无可计数评分样本；现有描述偏“偏远/冷清”，正面与中性混杂，不换算分数。","signature_dishes":[{"name":"莓果花生酱香蕉牛肉汉堡","mentions":1,"sources":["https://m.toutiao.com/article/7671259174071730722/"]},{"name":"牛肉面","mentions":2,"sources":["https://jfjt.sjtu.edu.cn/CampusServs_View.aspx?id=87","https://ourhome.sjtu.edu.cn/article/1057"]},{"name":"炸酱面","mentions":1,"sources":["https://jfjt.sjtu.edu.cn/CampusServs_View.aspx?id=87"]},{"name":"酱烤厚烧肉饭","mentions":1,"sources":["https://jfjt.sjtu.edu.cn/CampusServs_View.aspx?id=87"]},{"name":"伊诺咖啡","mentions":1,"sources":["https://ourhome.sjtu.edu.cn/article/1057"]}],"quotes":[{"text":"六餐在交大“远东地区”，离各个研究所较近，楼比较小，很多同学直到毕业都没有来过","source":"https://ourhome.sjtu.edu.cn/article/1057","date":"2023-08-22"},{"text":"二楼的伊诺餐厅格外有小资情调","source":"https://ourhome.sjtu.edu.cn/article/907","date":"2022-08-18"},{"text":"打破传统味蕾认知","source":"https://m.toutiao.com/article/7671259174071730722/","date":"2026-08"},{"text":"一楼的学生食堂提供牛肉面、炸酱面和套餐饭、米粉等","source":"https://ourhome.sjtu.edu.cn/article/1057","date":"2023-08-22"}],"confidence":"low","notes":"位置偏远、客流少的描述在两篇推文中一致（“很多同学直到毕业都没有来过”），但 2026 十大美食仍有 1 席（伊诺咖啡创意汉堡），属小众但有记忆点。缺口：评分与真实客流数据。","top10_seats":1,"top10_dishes":["伊诺创意汉堡"],"honors":null},"700":{"name":"第七餐饮大楼","baseline_score":null,"score_method":"null：仅 3 条定性描述，且含“品类较少”的负面表述，样本不足以换算分数。","signature_dishes":[{"name":"寿喜锅","mentions":2,"sources":["https://ourhome.sjtu.edu.cn/article/907","https://ourhome.sjtu.edu.cn/article/1057"]},{"name":"小火锅","mentions":1,"sources":["https://ourhome.sjtu.edu.cn/article/1057"]},{"name":"赛文西餐厅西餐","mentions":1,"sources":["https://jfjt.sjtu.edu.cn/CampusServs_View.aspx?id=86"]},{"name":"中式自选","mentions":1,"sources":["https://jfjt.sjtu.edu.cn/CampusServs_View.aspx?id=86"]}],"quotes":[{"text":"七餐的寿喜锅在交大学生中有响当当的名号","source":"https://ourhome.sjtu.edu.cn/article/907","date":"2022-08-18"},{"text":"七餐提供的品类较少，有寿喜锅、小火锅和中西餐点","source":"https://ourhome.sjtu.edu.cn/article/1057","date":"2023-08-22"},{"text":"全景玻璃房；分为中式自选和赛文西餐厅两个餐厅","source":"https://jfjt.sjtu.edu.cn/CampusServs_View.aspx?id=86","date":"官方页面"},{"text":"环境优美绿化好，路过可以来解解馋","source":"https://ourhome.sjtu.edu.cn/article/1057","date":"2023-08-22"}],"confidence":"low","notes":"菜品集中（寿喜锅是唯一有“名号”背书的单品），官方页面确认是全景玻璃房、中式自选+赛文西餐厅。2026 十大美食 0 席。缺口：评分、价位、学生对“品类较少”的具体评价。","top10_seats":0,"top10_dishes":[],"honors":null}},"top10":{"name":"寻味交大 · 十大美食","year":2026,"source":"https://m.toutiao.com/article/7671259174071730722/（后勤保障中心官方号 2026-08-07 发布，新浪转载 https://www.sina.cn/news/detail/5329580417352620.html）","note":"交大师生真实投票，原文未公布票数，只有席位数；仅作序数信号，不换算成 1-5 分。"}};
+
+var CONFIG = {
+  campusCenter: [121.42565, 31.02846],
+  walkSpeed: 85,
+  bikeSpeed: 245,
+  detour: 1.3,
+  refreshMs: 60000,
+  queueFactor: 0.28
+};
+
+var HAS_GRAPH = (typeof WALK_GRAPH !== 'undefined') && WALK_GRAPH && WALK_GRAPH.nodes && WALK_GRAPH.nodes.length > 10;
+
+var POI = {
+  100: { short: '一餐', full: '第一餐饮大楼', lon: 121.431901, lat: 31.022167 },
+  200: { short: '二餐', full: '第二餐饮大楼', lon: 121.436299, lat: 31.022911 },
+  300: { short: '三餐', full: '第三餐饮大楼', lon: 121.433112, lat: 31.026691 },
+  400: { short: '四餐', full: '第四餐饮大楼', lon: 121.427282, lat: 31.025244 },
+  500: { short: '五餐', full: '第五餐饮大楼', lon: 121.441302, lat: 31.023637 },
+  600: { short: '六餐', full: '第六餐饮大楼', lon: 121.444640, lat: 31.029233 },
+  700: { short: '七餐', full: '第七餐饮大楼', lon: 121.441087, lat: 31.029632 }
+};
+
+var state = {
+  data: SNAPSHOT,
+  pos: CONFIG.campusCenter.slice(),
+  posWgs: gcj02ToWgs84(CONFIG.campusCenter[0], CONFIG.campusCenter[1]),
+  posKind: 'demo',
+  accuracy: null,
+  routes: null,
+  weights: [25, 30, 30, 15],
+  idx: null,
+  playing: false,
+  timer: null,
+  selected: 200,
+  live: false,
+  lastUpdate: SNAPSHOT.fetchedAt,
+  rvSelected: 400,
+  rvItems: [],
+  rvSummary: null,
+  rvCommunity: null,
+  rvOnline: true
+};
+
+function $(id) { return document.getElementById(id); }
+function pad(n) { return (n < 10 ? '0' : '') + n; }
+function clamp(v, a, b) { return v < a ? a : (v > b ? b : v); }
+function mean(a) { if (!a.length) return 0; var s = 0; for (var i = 0; i < a.length; i++) s += a[i]; return s / a.length; }
+function maxArr(a) { var m = -1; for (var i = 0; i < a.length; i++) { if (a[i] > m) m = a[i]; } return m < 0 ? 0 : m; }
+function pct(v) { return (v === 0 ? '0' : v.toFixed(0)) + '%'; }
+function distText(d) { return d < 1000 ? d + 'm' : (d / 1000).toFixed(1) + 'km'; }
+function haversine(a, b) {
+  var R = 6371000, rad = Math.PI / 180;
+  var dLat = (b[1] - a[1]) * rad, dLon = (b[0] - a[0]) * rad;
+  var la1 = a[1] * rad, la2 = b[1] * rad;
+  var h = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(la1) * Math.cos(la2) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  return 2 * R * Math.asin(Math.sqrt(h));
+}
+function wgs84ToGcj02(lng, lat) {
+  var PI = Math.PI, a = 6378245.0, ee = 0.00669342162296594323;
+  function tLat(x, y) {
+    var r = -100.0 + 2.0 * x + 3.0 * y + 0.2 * y * y + 0.1 * x * y + 0.2 * Math.sqrt(Math.abs(x));
+    r += (20.0 * Math.sin(6.0 * x * PI) + 20.0 * Math.sin(2.0 * x * PI)) * 2.0 / 3.0;
+    r += (20.0 * Math.sin(y * PI) + 40.0 * Math.sin(y / 3.0 * PI)) * 2.0 / 3.0;
+    r += (160.0 * Math.sin(y / 12.0 * PI) + 320 * Math.sin(y * PI / 30.0)) * 2.0 / 3.0;
+    return r;
+  }
+  function tLng(x, y) {
+    var r = 300.0 + x + 2.0 * y + 0.1 * x * x + 0.1 * x * y + 0.1 * Math.sqrt(Math.abs(x));
+    r += (20.0 * Math.sin(6.0 * x * PI) + 20.0 * Math.sin(2.0 * x * PI)) * 2.0 / 3.0;
+    r += (20.0 * Math.sin(x * PI) + 40.0 * Math.sin(x / 3.0 * PI)) * 2.0 / 3.0;
+    r += (150.0 * Math.sin(x / 12.0 * PI) + 300.0 * Math.sin(x / 30.0 * PI)) * 2.0 / 3.0;
+    return r;
+  }
+  var dLat = tLat(lng - 105.0, lat - 35.0), dLng = tLng(lng - 105.0, lat - 35.0);
+  var radLat = lat / 180.0 * PI, magic = Math.sin(radLat);
+  magic = 1 - ee * magic * magic;
+  var sq = Math.sqrt(magic);
+  dLat = (dLat * 180.0) / ((a * (1 - ee)) / (magic * sq) * PI);
+  dLng = (dLng * 180.0) / (a / sq * Math.cos(radLat) * PI);
+  return [lng + dLng, lat + dLat];
+}
+function gcj02ToWgs84(lng, lat) { return [lng - 0.00472, lat + 0.00183]; }
+
+function toast(msg) {
+  var t = $('toast'); if (!t) return;
+  t.textContent = msg; t.className = 'toast show';
+  clearTimeout(t._h); t._h = setTimeout(function () { t.className = 'toast'; }, 2600);
+}
+function timeAt(idx) {
+  var ws = state.data.windowStart || '17:00';
+  var p = ws.split(':');
+  var t = parseInt(p[0], 10) * 60 + parseInt(p[1], 10) + idx;
+  return pad(Math.floor(t / 60) % 24) + ':' + pad(t % 60);
+}
+function valAt(series, idx) {
+  if (!series.length) return 0;
+  if (idx === null) return series[series.length - 1];
+  return series[clamp(idx, 0, series.length - 1)];
+}
+function mealInfo(d) {
+  var h = d.getHours() + d.getMinutes() / 60;
+  if (h >= 6.5 && h < 9.0) return { name: '早餐时段', peak: false };
+  if (h >= 10.6 && h < 13.2) return { name: '午餐时段', peak: (h >= 11.4 && h <= 12.5) };
+  if (h >= 16.5 && h < 19.5) return { name: '晚餐时段', peak: (h >= 17.2 && h <= 18.5) };
+  return { name: '非就餐时段', peak: false };
+}
+function rateColor(v) { if (v >= 35) return '#c62a3a'; if (v >= 20) return '#c58a2a'; return '#2e9e6b'; }
+function rateWord(v) { if (v >= 40) return '很挤'; if (v >= 30) return '较挤'; if (v >= 18) return '适中'; if (v > 0) return '空闲'; return '无人'; }
+function stars(v) {
+  if (v === null || v === undefined) return '暂无评分';
+  var full = Math.round(v);
+  var s = '';
+  for (var i = 0; i < 5; i++) s += (i < full ? '★' : '☆');
+  return s;
+}
+
+/* ---------- 步行路网 ---------- */
+function nearestNode(g, lng, lat) {
+  var best = -1, bd = Infinity;
+  for (var i = 0; i < g.nodes.length; i++) {
+    var n = g.nodes[i];
+    var dx = (n[0] - lng) * 95400, dy = (n[1] - lat) * 110540;
+    var d = dx * dx + dy * dy;
+    if (d < bd) { bd = d; best = i; }
+  }
+  return { idx: best, dist: Math.sqrt(bd) };
+}
+function buildAdj(g) {
+  var adj = [];
+  for (var i = 0; i < g.nodes.length; i++) adj.push([]);
+  for (var e = 0; e < g.edges.length; e++) {
+    var a = g.edges[e][0], b = g.edges[e][1], w = g.edges[e][2];
+    adj[a].push([b, w]); adj[b].push([a, w]);
+  }
+  return adj;
+}
+function routeToCanteens(fromLng, fromLat) {
+  var g = WALK_GRAPH;
+  if (!HAS_GRAPH) return null;
+  if (!g._adj) g._adj = buildAdj(g);
+  var adj = g._adj;
+  var s = nearestNode(g, fromLng, fromLat);
+  if (s.dist > 600) return null;
+  var n = g.nodes.length;
+  var dist = new Array(n), done = new Array(n);
+  for (var i = 0; i < n; i++) { dist[i] = Infinity; done[i] = false; }
+  dist[s.idx] = 0;
+  var queue = [[0, s.idx]];
+  while (queue.length) {
+    queue.sort(function (a, b) { return a[0] - b[0]; });
+    var cur = queue.shift(), u = cur[1];
+    if (done[u]) continue;
+    done[u] = true;
+    for (var k = 0; k < adj[u].length; k++) {
+      var v = adj[u][k][0], w = adj[u][k][1];
+      if (dist[v] > dist[u] + w) { dist[v] = dist[u] + w; queue.push([dist[v], v]); }
+    }
+  }
+  var out = {};
+  for (var id in g.snap) {
+    if (!g.snap.hasOwnProperty(id)) continue;
+    var ni = g.snap[id];
+    if (typeof ni === 'number' && isFinite(dist[ni])) out[id] = dist[ni] + s.dist;
+  }
+  return out;
+}
+function recomputeRoutes() {
+  state.routes = null;
+  if (HAS_GRAPH && state.posWgs) {
+    try { state.routes = routeToCanteens(state.posWgs[0], state.posWgs[1]); } catch (e) { state.routes = null; }
+  }
+}
+
+/* ---------- 口碑数据 ---------- */
+function communityOf(id) {
+  var c = state.rvCommunity || (COMMUNITY && COMMUNITY.canteens) || {};
+  return c[String(id)] || null;
+}
+function studentOf(id) {
+  var s = state.rvSummary && state.rvSummary.by_canteen ? state.rvSummary.by_canteen[String(id)] : null;
+  return s || null;
+}
+function seatsOf(id) {
+  var co = communityOf(id);
+  return co && typeof co.top10_seats === 'number' ? co.top10_seats : 0;
+}
+function heatScore(id) {
+  var s = seatsOf(id);
+  return [40, 55, 70, 85][Math.min(s, 3)];
+}
+function ratingOf(id) {
+  var st = studentOf(id), co = communityOf(id);
+  var cs = co && typeof co.baseline_score === 'number' ? co.baseline_score : null;
+  var ss = st ? st.avg : null;
+  if (ss !== null && cs !== null) return { value: ss * 0.6 + cs * 0.4, source: 'mixed', student: ss, community: cs, count: st ? st.count : 0 };
+  if (ss !== null) return { value: ss, source: 'student', student: ss, community: null, count: st.count };
+  if (cs !== null) return { value: cs, source: 'community', student: null, community: cs, count: 0 };
+  return { value: null, source: 'none', student: null, community: null, count: 0 };
+}
+
+/* ---------- 推荐计算 ---------- */
+function computeAll() {
+  var out = [];
+  var pos = state.pos, w = state.weights;
+  var sum = 0;
+  for (var wi = 0; wi < 4; wi++) sum += w[wi];
+  sum = sum || 1;
+  for (var i = 0; i < state.data.canteens.length; i++) {
+    var c = state.data.canteens[i];
+    var poi = POI[c.id] || { short: c.name, full: c.name, lon: CONFIG.campusCenter[0], lat: CONFIG.campusCenter[1] };
+    var act = [];
+    for (var j = 0; j < c.subs.length; j++) {
+      var s = c.subs[j];
+      if (s.open === 0) continue;
+      if (maxArr(s.r) <= 0.4) continue;
+      act.push(s);
+    }
+    var cur = 0, peak = 0, avg = 0, best = null;
+    if (act.length) {
+      var cl = [], al = [];
+      for (var k = 0; k < act.length; k++) {
+        cl.push(valAt(act[k].r, state.idx));
+        al.push(mean(act[k].r));
+        var pk = maxArr(act[k].r);
+        if (pk > peak) peak = pk;
+      }
+      cur = mean(cl); avg = mean(al);
+      var lo = null;
+      for (var m = 0; m < act.length; m++) {
+        var v = valAt(act[m].r, state.idx);
+        if (lo === null || v < lo.v) lo = { sub: act[m], v: v };
+      }
+      best = lo;
+    }
+    var straight = Math.round(haversine(pos, [poi.lon, poi.lat]));
+    var walkDist, routed = false;
+    if (state.routes && typeof state.routes[c.id] === 'number') { walkDist = Math.round(state.routes[c.id]); routed = true; }
+    else { walkDist = Math.round(straight * CONFIG.detour); }
+    var walkMin = Math.max(1, Math.round(walkDist / CONFIG.walkSpeed));
+    var bikeMin = Math.max(1, Math.round(walkDist / CONFIG.bikeSpeed));
+    var queue = Math.round(cur * CONFIG.queueFactor * 10) / 10;
+    var popScore = clamp(avg / 45 * 100, 0, 100);
+    var distScore = clamp(100 - walkDist / 16, 0, 100);
+    var queueScore = clamp(100 - queue * 5, 0, 100);
+    var rating = ratingOf(c.id);
+    var repScore = (rating.value !== null)
+      ? clamp((rating.value - 1) / 4 * 100, 0, 100)
+      : heatScore(c.id);
+    var score = (popScore * w[0] + distScore * w[1] + queueScore * w[2] + repScore * w[3]) / sum;
+    out.push({
+      c: c, poi: poi, act: act, cur: cur, peak: peak, avg: avg, best: best,
+      straight: straight, walkDist: walkDist, routed: routed, walkMin: walkMin, bikeMin: bikeMin, queue: queue,
+      popScore: popScore, distScore: distScore, queueScore: queueScore, repScore: repScore,
+      rating: rating, score: score, closed: act.length === 0
+    });
+  }
+  out.sort(function (a, b) {
+    if (a.closed !== b.closed) return a.closed ? 1 : -1;
+    return b.score - a.score;
+  });
+  for (var n = 0; n < out.length; n++) out[n].rank = n + 1;
+  return out;
+}
+
+/* ---------- 渲染：顶部 ---------- */
+function renderClock() {
+  var d = new Date();
+  $('clock').textContent = pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds());
+  var mi = mealInfo(d);
+  $('mealPill').textContent = mi.name + (mi.peak ? ' · 高峰' : '');
+}
+function setLocUI() {
+  var title = $('locTitle'), sub = $('locSub');
+  if (state.posKind === 'gps') {
+    title.innerHTML = '已使用你的位置';
+    sub.textContent = '（定位精度约 ' + (state.accuracy ? Math.round(state.accuracy) : '?') + ' 米）';
+  } else if (state.posKind === 'manual') {
+    title.innerHTML = '已手动选点';
+    sub.textContent = '（' + state.pos[1].toFixed(4) + ', ' + state.pos[0].toFixed(4) + '）';
+  } else if (state.posKind === 'fail') {
+    title.innerHTML = '定位失败，使用示例位置';
+    sub.textContent = '（可点右侧「手动选点」）';
+  } else {
+    title.innerHTML = '正在使用示例位置（校园中心）';
+    sub.textContent = '（点右侧按钮用你的真实位置，步行时间才准）';
+  }
+}
+function renderNotice() {
+  var mi = mealInfo(new Date());
+  var el = $('notice');
+  if (mi.name !== '非就餐时段') { el.style.display = 'none'; return; }
+  el.style.display = 'flex';
+  el.innerHTML = '<span>·</span><span>现在是<b>非就餐时段</b>，展示最近一次服务窗口 <b>' +
+    (state.data.windowStart || '--') + '–' + (state.data.windowEnd || '--') + '</b> 的数据；点「回放」可看高峰。</span>';
+}
+function renderHero(list) {
+  var top = list[0];
+  if (!top) return;
+  var live = [];
+  for (var i = 0; i < list.length; i++) { if (!list[i].closed) live.push(list[i]); }
+  var avgCur = 0;
+  for (var j = 0; j < live.length; j++) avgCur += live[j].cur;
+  avgCur = live.length ? avgCur / live.length : 0;
+  var quiet = live.length ? live[0] : null, peakMax = live.length ? live[0] : null;
+  for (var k = 0; k < live.length; k++) {
+    if (live[k].cur < quiet.cur) quiet = live[k];
+    if (live[k].peak > peakMax.peak) peakMax = live[k];
+  }
+  $('heroLead').innerHTML = top.closed
+    ? '当前所有食堂都没有可用窗口，建议稍后再看。'
+    : '<b>' + top.poi.short + '</b> 最合适：步行 <b>' + top.walkMin + ' 分钟</b>，排队约 <b>' +
+      (top.queue < 0.5 ? '0' : top.queue.toFixed(0)) + ' 分钟</b>，此刻人流 <b>' + pct(top.cur) + '</b>。' +
+      (top.rating.value !== null ? ' 口碑 ' + top.rating.value.toFixed(1) + ' 分。' : '');
+  $('heroStats').innerHTML =
+    '<div><span>全校平均人流</span><b>' + pct(avgCur) + '</b></div>' +
+    '<div><span>此刻最空</span><b>' + (quiet ? quiet.poi.short : '--') + '<small>' + (quiet ? pct(quiet.cur) : '') + '</small></b></div>' +
+    '<div><span>峰值最高</span><b>' + (peakMax ? peakMax.poi.short : '--') + '<small>' + (peakMax ? pct(peakMax.peak) : '') + '</small></b></div>' +
+    '<div><span>十大美食</span><b>' + (function () {
+      var t = 0;
+      for (var cid in POI) { if (POI.hasOwnProperty(cid)) t += seatsOf(parseInt(cid, 10)); }
+      return t;
+    })() + '<small>席</small></b></div>';
+
+  $('pickName').textContent = top.poi.short;
+  $('pickFull').textContent = top.poi.full + ' · ' + top.c.subs.length + ' 个窗口';
+  $('pickSub').textContent = (state.idx === null ? timeAt((state.data.minutes || 120) - 1) : timeAt(state.idx));
+  $('pickStats').innerHTML =
+    '<div><span>步行</span><b>' + top.walkMin + '<small>分</small></b></div>' +
+    '<div><span>排队</span><b>' + (top.queue < 0.5 ? '0' : top.queue.toFixed(0)) + '<small>分</small></b></div>' +
+    '<div><span>人流</span><b style="color:' + rateColor(top.cur) + '">' + pct(top.cur) + '</b></div>' +
+    '<div><span>骑行</span><b>' + top.bikeMin + '<small>分</small></b></div>';
+  var tags = '';
+  if (top.rating.value !== null) tags += '<span class="tagx brand">口碑 ' + top.rating.value.toFixed(1) + ' · ' + stars(top.rating.value) + '</span>';
+  if (seatsOf(top.c.id) > 0) tags += '<span class="tagx">官方十大美食 ' + seatsOf(top.c.id) + ' 席</span>';
+  if (top.best) tags += '<span class="tagx">最空窗口 ' + top.best.sub.name + ' ' + pct(top.best.v) + '</span>';
+  if (top.closed) tags += '<span class="tagx">暂无营业</span>';
+  $('pickTags').innerHTML = tags;
+  var C = 2 * Math.PI * 52, bar = $('ringBar');
+  if (bar) bar.style.strokeDasharray = (clamp(top.score, 1, 100) / 100 * C).toFixed(1) + ' ' + C.toFixed(1);
+  $('pickScore').textContent = top.score.toFixed(1);
+  $('pickNote').innerHTML = top.closed ? '各窗口暂停营业，已自动跳过。'
+    : '去 <b>' + (top.best ? top.best.sub.name : '任意窗口') + '</b>，此刻 <b>' + (top.best ? pct(top.best.v) : '--') + '</b>；近 2 小时人气均值 ' + pct(top.avg) + '，峰值 ' + pct(top.peak) + '。';
+  var mi = mealInfo(new Date());
+  $('recSummary').textContent = mi.name + ' · ' + (state.idx === null ? '最新 ' + timeAt((state.data.minutes || 120) - 1) : '回放 ' + timeAt(state.idx));
+}
+
+/* ---------- 推荐卡 ---------- */
+function renderRec(list) {
+  var big = list[0];
+  if (!big) { $('recBig').innerHTML = ''; $('recSide').innerHTML = ''; return; }
+  $('recBig').innerHTML = '<div class="rcard big">' +
+    '<div class="rc-top"><div><div class="rc-name">' + big.poi.short + '</div>' +
+      '<div class="rc-sub">' + big.poi.full + ' · ' + big.c.subs.length + ' 个窗口</div></div>' +
+      '<div class="rc-rank">首选 / NO.1</div></div>' +
+    '<div class="rc-metrics">' +
+      '<div><span>步行</span><b>' + big.walkMin + '<small>分钟</small></b></div>' +
+      '<div><span>排队</span><b>' + (big.queue < 0.5 ? '0' : big.queue.toFixed(0)) + '<small>分钟</small></b></div>' +
+      '<div><span>人流</span><b style="color:' + rateColor(big.cur) + '">' + pct(big.cur) + '</b></div>' +
+      '<div><span>口碑</span><b>' + (big.rating.value !== null ? big.rating.value.toFixed(1) : '—') + '<small>分</small></b></div>' +
+    '</div>' +
+    '<div class="rc-why">人气均值 ' + pct(big.avg) + ' · 峰值 ' + pct(big.peak) +
+      (big.rating.value !== null ? ' · 口碑 ' + big.rating.value.toFixed(1) + ' 分' : '') + '</div>' +
+    '<div class="rc-bottom">' +
+      (big.best ? '<div class="rc-win">推荐窗口 ' + big.best.sub.name + ' · ' + pct(big.best.v) + '</div>' : '<div></div>') +
+      '<div class="rc-score">' + big.score.toFixed(1) + '<span>综合分</span></div>' +
+    '</div></div>';
+
+  var side = '';
+  for (var i = 1; i < Math.min(3, list.length); i++) {
+    var m = list[i];
+    side += '<div class="rcard">' +
+      '<div class="rc-top"><div><div class="rc-name" style="font-size:19px">' + m.poi.short + '</div>' +
+        '<div class="rc-sub">' + m.poi.full + '</div></div>' +
+        '<div class="rc-rank">NO.' + (i + 1) + '</div></div>' +
+      '<div class="mini-meta">' +
+        '<span>步行 <b>' + m.walkMin + ' 分</b></span>' +
+        '<span>排队 <b>' + (m.queue < 0.5 ? '0' : m.queue.toFixed(0)) + ' 分</b></span>' +
+        '<span>人流 <b style="color:' + rateColor(m.cur) + '">' + pct(m.cur) + '</b></span>' +
+      '</div>' +
+      '<div class="rc-bottom" style="margin-top:14px">' +
+        '<div class="stars">' + stars(m.rating.value) + '</div>' +
+        '<div class="mini-score">' + m.score.toFixed(1) + '</div>' +
+      '</div></div>';
+  }
+  $('recSide').innerHTML = side;
+}
+
+/* ---------- 图表 ---------- */
+function renderBars(list) {
+  var maxV = 20;
+  for (var i = 0; i < list.length; i++) { if (list[i].cur > maxV) maxV = list[i].cur; }
+  maxV = Math.ceil(maxV * 1.08 / 10) * 10;
+  var html = '';
+  for (var j = 0; j < list.length; j++) {
+    var m = list[j];
+    var w = clamp(m.cur / maxV * 100, 0, 100);
+    var col = m.closed ? '#c9c2bb' : rateColor(m.cur);
+    html += '<div class="brow ' + (j === 0 ? 'first' : '') + '">' +
+      '<div class="rk">' + (j + 1) + '</div><div class="nm">' + m.poi.short + '</div>' +
+      '<div class="trk"><div class="fil" style="width:' + w.toFixed(1) + '%;background:' + col + '"></div></div>' +
+      '<div class="vl" style="color:' + col + '">' + (m.closed ? '--' : pct(m.cur)) + '</div>' +
+      '<div class="mt">' + m.walkMin + ' 分 · ' + (m.queue < 0.5 ? '不用等' : '排队 ' + m.queue.toFixed(0) + ' 分') + '</div>' +
+    '</div>';
+  }
+  $('bars').innerHTML = html;
+  $('barTag').textContent = state.idx === null ? '最新数据' : '回放 ' + timeAt(state.idx);
+}
+function renderFacts(list) {
+  var live = [];
+  for (var i = 0; i < list.length; i++) { if (!list[i].closed) live.push(list[i]); }
+  if (!live.length) { $('facts3').innerHTML = ''; return; }
+  var pop = live[0], quiet = live[0], peak = live[0];
+  for (var j = 1; j < live.length; j++) {
+    if (live[j].avg > pop.avg) pop = live[j];
+    if (live[j].cur < quiet.cur) quiet = live[j];
+    if (live[j].peak > peak.peak) peak = live[j];
+  }
+  $('facts3').innerHTML =
+    '<div><span>人气最旺</span><b>' + pop.poi.short + '<i>' + pct(pop.avg) + '</i></b></div>' +
+    '<div><span>此刻最空</span><b>' + quiet.poi.short + '<i>' + pct(quiet.cur) + '</i></b></div>' +
+    '<div><span>峰值最高</span><b>' + peak.poi.short + '<i>' + pct(peak.peak) + '</i></b></div>';
+}
+function svgLine(series, yda, color) {
+  var W = 720, H = 270, padL = 40, padR = 14, padT = 16, padB = 26;
+  var N = series.length, maxV = 20;
+  for (var i = 0; i < N; i++) { if (series[i] > maxV) maxV = series[i]; }
+  if (yda) { for (var iy = 0; iy < Math.min(N, yda.length); iy++) { if (yda[iy] > maxV) maxV = yda[iy]; } }
+  maxV = Math.ceil(maxV / 10) * 10;
+  var iw = W - padL - padR, ih = H - padT - padB;
+  function X(i) { return padL + (N <= 1 ? 0 : i * iw / (N - 1)); }
+  function Y(v) { return H - padB - (v / maxV) * ih; }
+  var g = '';
+  for (var t = 0; t <= 4; t++) {
+    var vv = maxV * t / 4, yy = Y(vv);
+    g += '<line class="ax" x1="' + padL + '" y1="' + yy.toFixed(1) + '" x2="' + (W - padR) + '" y2="' + yy.toFixed(1) + '"/>';
+    g += '<text class="axt" x="' + (padL - 6) + '" y="' + (yy + 3.5).toFixed(1) + '" text-anchor="end">' + vv.toFixed(0) + '%</text>';
+  }
+  var d = '';
+  for (var k = 0; k < N; k++) { d += (k === 0 ? 'M' : 'L') + X(k).toFixed(1) + ' ' + Y(series[k]).toFixed(1) + ' '; }
+  var area = d + 'L' + X(N - 1).toFixed(1) + ' ' + (H - padB) + ' L' + X(0).toFixed(1) + ' ' + (H - padB) + ' Z';
+  var ydaPath = '';
+  if (yda && yda.length > 1) {
+    var yd = '';
+    for (var ky = 0; ky < Math.min(N, yda.length); ky++) { yd += (ky === 0 ? 'M' : 'L') + X(ky).toFixed(1) + ' ' + Y(yda[ky]).toFixed(1) + ' '; }
+    ydaPath = '<path d="' + yd + '" fill="none" stroke="#c9c2bb" stroke-width="1.4" stroke-dasharray="4 4"/>';
+  }
+  var peakIdx = 0;
+  for (var p = 1; p < N; p++) { if (series[p] > series[peakIdx]) peakIdx = p; }
+  var curIdx = (state.idx === null ? N - 1 : clamp(state.idx, 0, N - 1));
+  var xl = '';
+  var marks = [0, Math.floor((N - 1) / 2), N - 1];
+  for (var q = 0; q < marks.length; q++) {
+    xl += '<text class="axt" x="' + X(marks[q]).toFixed(1) + '" y="' + (H - 7) + '" text-anchor="middle">' + timeAt(marks[q]) + '</text>';
+  }
+  var peak = '<circle cx="' + X(peakIdx).toFixed(1) + '" cy="' + Y(series[peakIdx]).toFixed(1) + '" r="3" fill="#1a1a1e" opacity="0.2"/>' +
+    '<text class="lbl" x="' + X(peakIdx).toFixed(1) + '" y="' + (Y(series[peakIdx]) - 9).toFixed(1) + '" text-anchor="middle" fill="#6f6a66">峰值 ' + series[peakIdx].toFixed(0) + '%</text>';
+  var cursor = '<line x1="' + X(curIdx).toFixed(1) + '" y1="' + padT + '" x2="' + X(curIdx).toFixed(1) + '" y2="' + (H - padB) + '" stroke="' + color + '" stroke-opacity="0.45" stroke-dasharray="3 3"/>' +
+    '<circle cx="' + X(curIdx).toFixed(1) + '" cy="' + Y(series[curIdx]).toFixed(1) + '" r="4.5" fill="' + color + '" stroke="#fff" stroke-width="2"/>' +
+    '<text class="lbl" x="' + X(curIdx).toFixed(1) + '" y="' + (Y(series[curIdx]) - 11).toFixed(1) + '" text-anchor="middle" fill="#1a1a1e">' + series[curIdx].toFixed(0) + '%</text>';
+  return '<svg viewBox="0 0 ' + W + ' ' + H + '" style="width:100%;height:auto">' + g +
+    '<path d="' + area + '" fill="rgba(200,16,46,0.045)"/>' +
+    '<path d="' + d + '" fill="none" stroke="' + color + '" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>' +
+    ydaPath + peak + cursor + xl + '</svg>';
+}
+function renderTrend(list) {
+  var chips = '';
+  for (var i = 0; i < list.length; i++) {
+    var cid = list[i].c.id;
+    chips += '<span class="chip ' + (cid === state.selected ? 'sel' : '') + '" data-id="' + cid + '">' + list[i].poi.short + '</span>';
+  }
+  $('chips').innerHTML = chips;
+  var target = null;
+  for (var j = 0; j < list.length; j++) { if (list[j].c.id === state.selected) target = list[j]; }
+  if (!target) target = list[0];
+  var N = state.data.minutes || 120, series = [], yda = [];
+  if (target && target.act.length) {
+    N = target.act[0].r.length;
+    for (var k = 0; k < N; k++) {
+      var s = 0, sy = 0, cy = 0;
+      for (var m = 0; m < target.act.length; m++) {
+        s += valAt(target.act[m].r, k);
+        var ys = target.act[m].y || [];
+        if (k < ys.length) { sy += ys[k]; cy++; }
+      }
+      series.push(s / target.act.length);
+      yda.push(cy ? sy / cy : 0);
+    }
+  } else { for (var n = 0; n < N; n++) { series.push(0); yda.push(0); } }
+  $('lineWrap').innerHTML = svgLine(series, yda, '#c8102e');
+  var ci = (state.idx === null ? N - 1 : clamp(state.idx, 0, N - 1));
+  if (ci < yda.length) {
+    var diff = series[ci] - yda[ci], up = diff >= 0;
+    $('trendDelta').style.color = up ? '#c62a3a' : '#2e9e6b';
+    $('trendDelta').textContent = '较昨日 ' + (up ? '+' : '') + diff.toFixed(1) + ' 个百分点';
+  }
+  $('scrub').max = N - 1;
+  if (state.idx !== null) $('scrub').value = state.idx;
+  $('scrubTime').textContent = (state.idx === null ? timeAt(N - 1) : timeAt(state.idx)) + ' / ' + timeAt(N - 1);
+}
+function renderScatter(list) {
+  var W = 720, H = 300, padL = 44, padR = 16, padT = 18, padB = 40;
+  var iw = W - padL - padR, ih = H - padT - padB;
+  var maxD = 1200;
+  for (var i = 0; i < list.length; i++) { if (list[i].walkDist > maxD) maxD = Math.ceil(list[i].walkDist / 200) * 200; }
+  var maxV = 15;
+  for (var j = 0; j < list.length; j++) { if (list[j].cur > maxV) maxV = list[j].cur; }
+  maxV = Math.ceil(maxV * 1.25 / 5) * 5;
+  function X(d) { return padL + clamp(d / maxD, 0, 1) * iw; }
+  function Y(v) { return H - padB - clamp(v / maxV, 0, 1) * ih; }
+  var g = '';
+  for (var t = 0; t <= 4; t++) {
+    var vv = maxV * t / 4, yy = Y(vv);
+    g += '<line class="ax" x1="' + padL + '" y1="' + yy.toFixed(1) + '" x2="' + (W - padR) + '" y2="' + yy.toFixed(1) + '"/>';
+    g += '<text class="axt" x="' + (padL - 6) + '" y="' + (yy + 3.5).toFixed(1) + '" text-anchor="end">' + vv.toFixed(0) + '%</text>';
+  }
+  for (var u = 0; u <= 4; u++) {
+    var dd = maxD * u / 4, xx = X(dd);
+    g += '<line class="ax" x1="' + xx.toFixed(1) + '" y1="' + padT + '" x2="' + xx.toFixed(1) + '" y2="' + (H - padB) + '"/>';
+    g += '<text class="axt" x="' + xx.toFixed(1) + '" y="' + (H - padB + 15) + '" text-anchor="middle">' + (dd >= 1000 ? (dd / 1000).toFixed(1) + 'km' : dd.toFixed(0) + 'm') + '</text>';
+  }
+  g += '<text class="axt" x="' + (W / 2) + '" y="' + (H - 4) + '" text-anchor="middle">步行距离</text>';
+  var dots = '';
+  for (var k = 0; k < list.length; k++) {
+    var m = list[k], r = 5 + clamp(m.avg / 45, 0, 1) * 10;
+    var col = m.closed ? '#c9c2bb' : rateColor(m.cur);
+    if (k === 0 && !m.closed) {
+      dots += '<circle cx="' + X(m.walkDist).toFixed(1) + '" cy="' + Y(m.cur).toFixed(1) + '" r="' + (r + 5).toFixed(1) +
+        '" fill="none" stroke="#c8102e" stroke-width="1.3" stroke-dasharray="3 3"/>';
+    }
+    dots += '<circle cx="' + X(m.walkDist).toFixed(1) + '" cy="' + Y(m.cur).toFixed(1) + '" r="' + r.toFixed(1) +
+      '" fill="' + col + '" fill-opacity="0.22" stroke="' + col + '" stroke-width="1.4"/>';
+    dots += '<text class="lbl" x="' + X(m.walkDist).toFixed(1) + '" y="' + (Y(m.cur) - r - 6).toFixed(1) + '" text-anchor="middle">' + m.poi.short + '</text>';
+  }
+  $('scatterWrap').innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" style="width:100%;height:auto">' + g + dots + '</svg>';
+}
+function renderTable(list) {
+  var html = '<table class="tbl"><thead><tr><th>食堂</th><th>人流</th><th>人气</th><th>步行</th><th>排队</th><th>口碑</th><th>状态</th></tr></thead><tbody>';
+  for (var i = 0; i < list.length; i++) {
+    var m = list[i];
+    var st = '<span class="badge off">暂停</span>';
+    if (!m.closed) {
+      if (m.cur >= 30) st = '<span class="badge hot">拥挤</span>';
+      else if (m.cur >= 18) st = '<span class="badge warn">适中</span>';
+      else st = '<span class="badge ok">空闲</span>';
+    }
+    html += '<tr><td>' + m.poi.short + '<span>' + m.poi.full + '</span></td>' +
+      '<td style="color:' + (m.closed ? '#9c948d' : rateColor(m.cur)) + '">' + (m.closed ? '--' : pct(m.cur)) + '</td>' +
+      '<td>' + pct(m.avg) + '</td><td>' + m.walkMin + ' 分</td>' +
+      '<td>' + (m.queue < 0.5 ? '0' : m.queue.toFixed(0)) + ' 分</td>' +
+      '<td>' + (m.rating.value !== null ? m.rating.value.toFixed(1) : '—') + '</td>' +
+      '<td>' + st + '</td></tr>';
+  }
+  $('tableWrap').innerHTML = html + '</tbody></table>';
+  $('dataTag').textContent = state.live ? '实时接口' : '内置快照';
+}
+
+/* ---------- 口碑墙 ---------- */
+function renderReviews() {
+  var list = [];
+  for (var id in POI) {
+    if (!POI.hasOwnProperty(id)) continue;
+    list.push({ id: parseInt(id, 10), poi: POI[id], rating: ratingOf(parseInt(id, 10)) });
+  }
+  list.sort(function (a, b) { return (b.rating.value || 0) - (a.rating.value || 0); });
+
+  var html = '';
+  for (var i = 0; i < list.length; i++) {
+    var it = list[i];
+    var on = it.id === state.rvSelected;
+    html += '<div class="rv-item ' + (on ? 'on' : '') + '" data-cid="' + it.id + '">' +
+      '<div class="rv-avatar">' + it.poi.short.charAt(0) + '</div>' +
+      '<div class="rv-info"><b>' + it.poi.short + ' · ' + it.poi.full + '</b>' +
+        '<span>' + (it.rating.value !== null ? stars(it.rating.value) : '暂无评分') +
+        (it.rating.count ? ' · ' + it.rating.count + ' 条' : '') + '</span></div>' +
+      '<div class="rv-score"><b>' + (it.rating.value !== null ? it.rating.value.toFixed(1) : '—') + '</b>' +
+      (seatsOf(it.id) > 0 ? '<span>十大美食 ' + seatsOf(it.id) + ' 席</span>' : '<span>口碑</span>') + '</div>' +
+    '</div>';
+  }
+  $('rvList').innerHTML = html;
+
+  var cur = state.rvSelected;
+  var co = communityOf(cur), st = studentOf(cur), rt = ratingOf(cur);
+  var dishes = [];
+  if (co && co.signature_dishes) {
+    for (var d = 0; d < co.signature_dishes.length; d++) {
+      dishes.push({ name: co.signature_dishes[d].name, from: '资料' });
+    }
+  }
+  if (co && co.top10_dishes) {
+    for (var td = 0; td < co.top10_dishes.length; td++) {
+      dishes.push({ name: co.top10_dishes[td], from: '十大美食' });
+    }
+  }
+  for (var r = 0; r < state.rvItems.length; r++) {
+    var it2 = state.rvItems[r];
+    if (it2.dish) {
+      var found = false;
+      for (var q = 0; q < dishes.length; q++) { if (dishes[q].name === it2.dish) { found = true; } }
+      if (!found) dishes.push({ name: it2.dish, from: '同学' });
+    }
+  }
+  var dishHtml = '';
+  if (dishes.length) {
+    dishHtml = '<div class="dishes">';
+    for (var w = 0; w < Math.min(8, dishes.length); w++) {
+      dishHtml += '<span class="dish">' + dishes[w].name + '<i>' + dishes[w].from + '</i></span>';
+    }
+    dishHtml += '</div>';
+  } else {
+    dishHtml = '<div class="empty">还没有明星菜品数据，等你来推荐。</div>';
+  }
+
+  var quotes = '';
+  if (co && co.quotes && co.quotes.length) {
+    for (var v = 0; v < Math.min(3, co.quotes.length); v++) {
+      var qt = co.quotes[v];
+      var srcTxt = '';
+      if (qt.source) {
+        var host = qt.source.replace('https://', '').replace('http://', '').split('/')[0];
+        srcTxt = '<cite>— <a href="' + qt.source + '" target="_blank" rel="noopener">' + host + '</a></cite>';
+      }
+      quotes += '<div class="quote">' + (qt.text || '') + srcTxt + '</div>';
+    }
+  } else {
+    quotes = '<div class="empty">暂无社区评价摘录。</div>';
+  }
+
+  var reviews = '';
+  if (state.rvItems.length) {
+    for (var x = 0; x < state.rvItems.length; x++) {
+      var rv = state.rvItems[x];
+      reviews += '<div class="review"><div class="top"><span class="stars">' + stars(rv.stars) + '</span>' +
+        '<span>' + (rv.user || '匿名') + '</span><span>' + rv.created_at + '</span>' +
+        (rv.dish ? '<span class="dish-tag">' + rv.dish + '</span>' : '') + '</div>' +
+        '<div class="txt">' + (rv.text || '（只打了分）') + '</div></div>';
+    }
+  } else {
+    reviews = '<div class="empty">' + (state.rvOnline ? '还没有同学评价，来写第一条。' : '评价服务未连接（启动 agent 服务后可写评价）。') + '</div>';
+  }
+
+  var srcLine = [];
+  if (rt.student !== null) srcLine.push('同学 ' + rt.student.toFixed(1));
+  if (rt.community !== null) srcLine.push('社区 ' + rt.community.toFixed(1));
+  var heat = seatsOf(cur);
+  var heatLine = heat > 0
+    ? '<span class="rv-heat">官方热度 · 2026 寻味交大十大美食 <b>' + heat + ' 席</b></span>'
+    : '<span class="rv-heat muted">官方十大美食：未入选</span>';
+  if (co && co.honors) heatLine += '<span class="rv-heat">' + co.honors + '</span>';
+  $('rvDetail').innerHTML =
+    '<div class="rv-head"><div><h4>' + POI[cur].short + ' · ' + POI[cur].full + '</h4>' +
+      '<div class="sub">' + (srcLine.length ? srcLine.join(' / ') + ' · 综合 ' + stars(rt.value) : '暂无同学评分') + '</div>' +
+      '<div class="rv-heat-row">' + heatLine + '</div></div>' +
+      '<div class="rv-big">' + (rt.value !== null
+        ? '<b>' + rt.value.toFixed(1) + '</b><span>口碑分 / 5</span>'
+        : (heat > 0
+            ? '<b>' + heat + '</b><span>十大美食席位</span>'
+            : '<b>—</b><span>暂无评分</span>')) + '</div></div>' +
+    '<div class="rv-divider"></div>' +
+    '<div class="rv-sec-title">明星菜品</div>' + dishHtml +
+    '<div class="rv-divider"></div>' +
+    '<div class="rv-sec-title">网络口碑摘录</div><div class="rv-quotes">' + quotes + '</div>' +
+    (quotes.indexOf('quote') >= 0 ? '<div class="rv-note">摘录自公开网络资料（交大家园网、教服集团官网、媒体转载等），原文与出处见每段末尾链接；水源社区需登录，暂未纳入。</div>' : '') +
+    '<div class="rv-divider"></div>' +
+    '<div class="rv-sec-title">同学评价（' + state.rvItems.length + '）</div><div class="rv-reviews">' + reviews + '</div>' +
+    '<div class="rv-form">' +
+      '<div class="rv-sec-title">我也来评（点击星星打分）</div>' +
+      '<div class="star-pick" id="starPick" data-v="0">' +
+        '<i data-v="1">★</i><i data-v="2">★</i><i data-v="3">★</i><i data-v="4">★</i><i data-v="5">★</i>' +
+      '</div>' +
+      '<div class="row">' +
+        '<input type="text" id="rvDish" placeholder="推荐菜品（可选）" maxlength="30" />' +
+        '<input type="text" id="rvUser" placeholder="昵称（可选）" maxlength="20" />' +
+      '</div>' +
+      '<textarea id="rvText" placeholder="说说这栋楼怎么样：菜品、排队、环境…" maxlength="300"></textarea>' +
+      '<div class="row" style="justify-content:flex-end">' +
+        '<button class="btn-solid" id="rvSubmit">提交评价</button>' +
+      '</div>' +
+    '</div>';
+
+  $('rvSummary').innerHTML = '同学评分 <b>' + (state.rvSummary ? state.rvSummary.total : 0) +
+    '</b> 条 · 口碑分 = 同学评分（无评分时按官方十大美食席位数计热度）';
+}
+
+/* ---------- 主体渲染 ---------- */
+function render() {
+  var list = computeAll();
+  renderClock();
+  setLocUI();
+  renderHero(list);
+  renderRec(list);
+  renderBars(list);
+  renderFacts(list);
+  renderTrend(list);
+  renderScatter(list);
+  renderTable(list);
+  renderReviews();
+  renderNotice();
+  $('footSrc').innerHTML = '数据：上海交通大学校园生活平台 就餐指数 · 更新 <b>' + state.lastUpdate + '</b>';
+  $('footWin').innerHTML = '窗口 ' + (state.data.windowStart || '--') + '–' + (state.data.windowEnd || '--') +
+    ' · 坐标 OSM/百度交叉校准 · 步行' + (HAS_GRAPH ? '按 OSM 路网最短路' : ' = 直线 × ' + CONFIG.detour) +
+    (state.live ? '' : ' · <b>静态版数据</b>');
+}
+
+/* ---------- 交互 ---------- */
+function applyTimeWeights() {
+  var mi = mealInfo(new Date());
+  var w = [25, 30, 30, 15];
+  if (mi.peak) w = [20, 25, 25, 30];
+  else if (mi.name === '午餐时段' || mi.name === '晚餐时段') w = [25, 25, 30, 20];
+  state.weights = w;
+  for (var i = 0; i < 4; i++) {
+    var el = $('w' + i);
+    if (el) { el.value = w[i]; }
+    var lab = $('w' + i + 'v');
+    if (lab) lab.textContent = w[i];
+  }
+}
+function bindWeights() {
+  for (var i = 0; i < 4; i++) {
+    (function (k) {
+      var el = $('w' + k);
+      if (!el) return;
+      el.addEventListener('input', function () {
+        state.weights[k] = parseInt(el.value, 10);
+        $('w' + k + 'v').textContent = el.value;
+        render();
+      });
+    })(i);
+  }
+}
+function bindPresets() {
+  var box = $('presets');
+  if (!box) return;
+  box.addEventListener('click', function (e) {
+    var t = e.target;
+    if (!t || t.className.indexOf('preset') < 0) return;
+    var arr = t.getAttribute('data-w').split(',');
+    for (var i = 0; i < 4; i++) {
+      state.weights[i] = parseInt(arr[i], 10);
+      var el = $('w' + i);
+      if (el) el.value = arr[i];
+      var lab = $('w' + i + 'v');
+      if (lab) lab.textContent = arr[i];
+    }
+    var btns = box.getElementsByTagName('button');
+    for (var b = 0; b < btns.length; b++) btns[b].className = 'preset';
+    t.className = 'preset on';
+    render();
+    toast('已切换偏好：' + t.textContent);
+  });
+}
+function bindChips() {
+  var box = $('chips');
+  if (!box) return;
+  box.addEventListener('click', function (e) {
+    var t = e.target;
+    if (!t || t.className.indexOf('chip') < 0) return;
+    state.selected = parseInt(t.getAttribute('data-id'), 10);
+    render();
+  });
+}
+function stopPlay() {
+  state.playing = false;
+  if (state.timer) { clearInterval(state.timer); state.timer = null; }
+  var b = $('btnPlay');
+  if (b) b.textContent = '▶ 回放';
+}
+function bindPlay() {
+  $('btnPlay').addEventListener('click', function () {
+    if (state.playing) { stopPlay(); return; }
+    if (state.idx === null || state.idx >= (state.data.minutes || 120) - 1) state.idx = 0;
+    state.playing = true;
+    $('btnPlay').textContent = '❚❚ 暂停';
+    state.timer = setInterval(function () {
+      state.idx = state.idx + 1;
+      if (state.idx >= (state.data.minutes || 120) - 1) { state.idx = (state.data.minutes || 120) - 1; stopPlay(); }
+      $('scrub').value = state.idx;
+      render();
+    }, 380);
+    render();
+  });
+  $('scrub').addEventListener('input', function () {
+    stopPlay();
+    state.idx = parseInt($('scrub').value, 10);
+    render();
+  });
+  $('btnLive').addEventListener('click', function () {
+    stopPlay(); state.idx = null; render(); toast('已回到最新数据');
+  });
+}
+function requestGeo() {
+  if (window.isSecureContext === false) {
+    toast('当前是 HTTP 访问，浏览器禁止定位；请用「手动选点」');
+    openPicker();
+    return;
+  }
+  if (!navigator.geolocation) { state.posKind = 'fail'; setLocUI(); toast('浏览器不支持定位'); return; }
+  toast('正在请求定位权限…');
+  navigator.geolocation.getCurrentPosition(function (p) {
+    state.posWgs = [p.coords.longitude, p.coords.latitude];
+    state.pos = wgs84ToGcj02(p.coords.longitude, p.coords.latitude);
+    state.posKind = 'gps';
+    state.accuracy = p.coords.accuracy;
+    recomputeRoutes();
+    render();
+    toast('定位成功，步行时间已重算');
+  }, function () {
+    state.posKind = 'fail'; setLocUI(); toast('定位失败，可手动选点');
+  }, { enableHighAccuracy: true, timeout: 12000, maximumAge: 0 });
+}
+
+/* ---------- 选点地图 ---------- */
+function pickerBounds() {
+  var xs = [], ys = [];
+  for (var id in POI) { if (!POI.hasOwnProperty(id)) continue; xs.push(POI[id].lon); ys.push(POI[id].lat); }
+  xs.push(CONFIG.campusCenter[0]); ys.push(CONFIG.campusCenter[1]);
+  var minX = Math.min.apply(null, xs), maxX = Math.max.apply(null, xs);
+  var minY = Math.min.apply(null, ys), maxY = Math.max.apply(null, ys);
+  var padX = (maxX - minX) * 0.16 + 0.0015, padY = (maxY - minY) * 0.16 + 0.0015;
+  return { minX: minX - padX, maxX: maxX + padX, minY: minY - padY, maxY: maxY + padY };
+}
+function renderPicker() {
+  var el = $('picker');
+  if (!el || el.hidden) return;
+  var b = pickerBounds(), W = 640, H = 360, pad = 18;
+  function X(lng) { return pad + (lng - b.minX) / (b.maxX - b.minX) * (W - 2 * pad); }
+  function Y(lat) { return pad + (b.maxY - lat) / (b.maxY - b.minY) * (H - 2 * pad); }
+  var g = '';
+  for (var i = 0; i <= 8; i++) { var gx = pad + i * (W - 2 * pad) / 8; g += '<line x1="' + gx.toFixed(1) + '" y1="' + pad + '" x2="' + gx.toFixed(1) + '" y2="' + (H - pad) + '" stroke="rgba(26,26,30,.06)"/>'; }
+  for (var j = 0; j <= 5; j++) { var gy = pad + j * (H - 2 * pad) / 5; g += '<line x1="' + pad + '" y1="' + gy.toFixed(1) + '" x2="' + (W - pad) + '" y2="' + gy.toFixed(1) + '" stroke="rgba(26,26,30,.06)"/>'; }
+  var cc = CONFIG.campusCenter;
+  g += '<circle class="pk-center" cx="' + X(cc[0]).toFixed(1) + '" cy="' + Y(cc[1]).toFixed(1) + '" r="7"/>';
+  for (var id in POI) {
+    if (!POI.hasOwnProperty(id)) continue;
+    var p = POI[id];
+    g += '<circle cx="' + X(p.lon).toFixed(1) + '" cy="' + Y(p.lat).toFixed(1) + '" r="5.5" fill="#c8102e" fill-opacity=".8"/>';
+    g += '<text class="pk-lbl" x="' + (X(p.lon) + 9).toFixed(1) + '" y="' + (Y(p.lat) + 4).toFixed(1) + '">' + p.short + '</text>';
+  }
+  g += '<circle class="pk-me" cx="' + X(state.pos[0]).toFixed(1) + '" cy="' + Y(state.pos[1]).toFixed(1) + '" r="7"/>';
+  el.innerHTML = '<div class="picker-head"><span>点地图选你的位置（红点 = 7 栋餐饮大楼）</span><span>手机无法定位时用这个</span></div>' +
+    '<svg id="pkSvg" viewBox="0 0 ' + W + ' ' + H + '" style="width:100%;height:auto">' + g + '</svg>';
+  $('pkSvg').addEventListener('click', function (e) {
+    var r = this.getBoundingClientRect();
+    var px = (e.clientX - r.left) / r.width * W, py = (e.clientY - r.top) / r.height * H;
+    var lng = b.minX + (px - pad) / (W - 2 * pad) * (b.maxX - b.minX);
+    var lat = b.maxY - (py - pad) / (H - 2 * pad) * (b.maxY - b.minY);
+    state.pos = [lng, lat];
+    state.posWgs = gcj02ToWgs84(lng, lat);
+    state.posKind = 'manual';
+    recomputeRoutes();
+    render();
+    renderPicker();
+    toast('已按选点位置重算');
+  });
+}
+function openPicker() { var el = $('picker'); if (el) { el.hidden = false; renderPicker(); } }
+function initPicker() {
+  var btn = $('btnPick');
+  if (!btn) return;
+  btn.addEventListener('click', function () {
+    var el = $('picker');
+    if (el.hidden) openPicker(); else el.hidden = true;
+  });
+}
+
+/* ---------- 口碑交互 ---------- */
+function loadReviews(retry) {
+  fetch('/agent/reviews/summary').then(function (r) {
+    if (!r.ok) throw new Error('http');
+    return r.json();
+  }).then(function (d) {
+    state.rvSummary = d.student || { total: 0, by_canteen: {} };
+    state.rvCommunity = (d.community && d.community.canteens) || {};
+    state.rvOnline = true;
+    return loadReviewItems();
+  }).catch(function () {
+    state.rvOnline = false;
+    state.rvSummary = { total: 0, by_canteen: {} };
+    state.rvCommunity = (COMMUNITY && COMMUNITY.canteens) || {};
+    render();
+    if (!retry) {
+      setTimeout(function () { loadReviews(true); }, 1500);
+    }
+  });
+}
+function loadReviewItems() {
+  return fetch('/agent/reviews?canteen_id=' + state.rvSelected + '&limit=8').then(function (r) {
+    return r.json();
+  }).then(function (d) {
+    state.rvItems = d.items || [];
+    render();
+  });
+}
+function bindReviews() {
+  var list = $('rvList');
+  if (list) {
+    list.addEventListener('click', function (e) {
+      var el = e.target;
+      while (el && el !== list && !el.getAttribute('data-cid')) { el = el.parentNode; }
+      if (!el || el === list) return;
+      state.rvSelected = parseInt(el.getAttribute('data-cid'), 10);
+      state.rvItems = [];
+      render();
+      if (state.rvOnline) loadReviewItems();
+    });
+  }
+  var detail = $('rvDetail');
+  if (detail) {
+    var picked = 0;
+    detail.addEventListener('click', function (e) {
+      var t = e.target;
+      if (t && t.parentNode && t.parentNode.id === 'starPick') {
+        picked = parseInt(t.getAttribute('data-v'), 10);
+        var stars = t.parentNode.getElementsByTagName('i');
+        for (var i = 0; i < stars.length; i++) {
+          stars[i].className = (i < picked) ? 'on' : '';
+        }
+        return;
+      }
+      if (t && t.id === 'rvSubmit') {
+        submitReview(picked);
+      }
+    });
+  }
+}
+function submitReview(starsVal) {
+  if (!state.rvOnline) { toast('线上静态版为只读，写评价需服务端环境'); return; }
+  if (!starsVal) { toast('先点星星打个分吧'); return; }
+  var dishEl = $('rvDish'), userEl = $('rvUser'), textEl = $('rvText');
+  var body = {
+    canteen_id: state.rvSelected,
+    stars: starsVal,
+    text: textEl ? textEl.value : '',
+    dish: dishEl ? dishEl.value : '',
+    user: (userEl && userEl.value) ? userEl.value : '匿名同学'
+  };
+  fetch('/agent/reviews', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  }).then(function (r) { return r.json(); }).then(function (d) {
+    if (!d.ok) { toast(d.error || '提交失败'); return; }
+    state.rvSummary = d.summary;
+    toast('评价已提交，谢谢！');
+    return loadReviewItems();
+  }).catch(function () {
+    toast('提交失败，检查服务是否在线');
+  });
+}
+
+/* ---------- 实时数据 ---------- */
+function fetchJson(url) {
+  return fetch(url, { headers: { 'Accept-Language': 'zh-CN,zh;q=0.9' } }).then(function (r) {
+    if (!r.ok) throw new Error('http ' + r.status);
+    return r.json();
+  });
+}
+function mapLive(mainList, subMap) {
+  var canteens = [], ws = '', we = '';
+  for (var i = 0; i < mainList.length; i++) {
+    var c = mainList[i];
+    if (c.id < 100 || c.id > 700) continue;
+    var d = subMap[c.id];
+    if (!d || !d.subs) continue;
+    var subs = [];
+    for (var j = 0; j < d.subs.length; j++) {
+      var s = d.subs[j], arr = [], yarr = [];
+      for (var k = 0; k < (s.curRates || []).length; k++) arr.push(Math.round(s.curRates[k].rate * 10) / 10);
+      for (var y = 0; y < (s.ydaRates || []).length; y++) yarr.push(Math.round(s.ydaRates[y].rate * 10) / 10);
+      if (!ws && s.curRates && s.curRates.length) {
+        ws = s.curRates[0].time.slice(11, 16);
+        we = s.curRates[s.curRates.length - 1].time.slice(11, 16);
+      }
+      subs.push({ id: s.id, name: s.name, open: s.isOpen, closeDesc: s.closeDesc || '', r: arr, y: yarr });
+    }
+    canteens.push({ id: c.id, name: c.name, isOpen: c.isOpen, note: c.note || '', schedule: d.scheduleDesc || '', subs: subs });
+  }
+  if (!canteens.length) throw new Error('empty');
+  var maxN = 0;
+  for (var m = 0; m < canteens.length; m++) {
+    for (var n = 0; n < canteens[m].subs.length; n++) {
+      if (canteens[m].subs[n].r.length > maxN) maxN = canteens[m].subs[n].r.length;
+    }
+  }
+  return {
+    fetchedAt: new Date().toLocaleTimeString('zh-CN', { hour12: false }),
+    windowStart: ws || '17:00', windowEnd: we || '18:59', minutes: maxN || 120, canteens: canteens
+  };
+}
+function setLiveStatus(ok, text) {
+  $('srcText').textContent = text;
+  $('srcPill').className = 'live' + (ok ? '' : ' off');
+}
+function refreshLive(silent) {
+  fetchJson('/api/jczs/main').then(function (mj) {
+    if (!mj || mj.code !== 0) throw new Error('bad payload');
+    var list = mj.data || [], ids = [];
+    for (var i = 0; i < list.length; i++) { if (list[i].id >= 100 && list[i].id <= 700) ids.push(list[i].id); }
+    return Promise.all(ids.map(function (id) {
+      return fetchJson('/api/jczs/sub?id=' + id).then(function (d) { return [id, d.data]; });
+    })).then(function (pairs) {
+      var map = {};
+      for (var k = 0; k < pairs.length; k++) map[pairs[k][0]] = pairs[k][1];
+      state.data = mapLive(list, map);
+      state.live = true;
+      state.lastUpdate = state.data.fetchedAt;
+      if (state.idx !== null) state.idx = null;
+      setLiveStatus(true, '实时接口');
+      render();
+      if (!silent) toast('已同步 ' + state.data.canteens.length + ' 个食堂');
+    });
+  }).catch(function () {
+    state.live = false;
+    setLiveStatus(false, '内置快照');
+    render();
+  });
+}
+
+/* ---------- 聊天 ---------- */
+function agentBase() { return (location.protocol === 'file:') ? 'http://127.0.0.1:8100' : '/agent'; }
+function chatAdd(text, cls) {
+  var body = $('chatBody');
+  if (!body) return;
+  var d = document.createElement('div');
+  d.className = 'msg ' + cls;
+  d.textContent = text;
+  body.appendChild(d);
+  body.scrollTop = body.scrollHeight;
+}
+function openChat() {
+  var panel = $('chatPanel'), input = $('chatText');
+  if (!panel) return;
+  panel.hidden = false;
+  if (input) input.focus();
+}
+function initChat() {
+  var fab = $('chatFab'), panel = $('chatPanel'), form = $('chatForm');
+  var input = $('chatText'), send = $('chatSend'), status = $('chatStatus');
+  if (!fab || !panel) return;
+  fab.addEventListener('click', function () { panel.hidden = !panel.hidden; if (!panel.hidden && input) input.focus(); });
+  $('chatClose').addEventListener('click', function () { panel.hidden = true; });
+  var ai = $('aiBar');
+  if (ai) ai.addEventListener('click', openChat);
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var q = input.value.trim();
+    if (!q) return;
+    chatAdd(q, 'me');
+    input.value = '';
+    send.disabled = true;
+    status.textContent = '思考中…（约 20~60 秒）';
+    var body = { message: q };
+    if (state.posKind !== 'demo') { body.lng = state.pos[0]; body.lat = state.pos[1]; }
+    fetch(agentBase() + '/chat', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
+    }).then(function (r) {
+      if (!r.ok) throw new Error('http');
+      return r.json();
+    }).then(function (d) {
+      chatAdd(d.reply || '（无回复）', 'bot');
+      status.textContent = 'deepseek-chat · 致远一号';
+    }).catch(function () {
+      var msg = state.live
+        ? '智能体服务未响应，请稍后再试。'
+        : '当前是线上静态版，对话需要服务端（校园网 / 本地部署版可用）。上方卡片与口碑区照常可用。';
+      chatAdd(msg, 'tip');
+      status.textContent = '静态版';
+    }).then(function () { send.disabled = false; });
+  });
+}
+
+/* ---------- 启动 ---------- */
+function boot() {
+  applyTimeWeights();
+  recomputeRoutes();
+  bindWeights();
+  bindPresets();
+  bindChips();
+  bindPlay();
+  initChat();
+  initPicker();
+  bindReviews();
+  var g2 = $('btnGeo2');
+  if (g2) g2.addEventListener('click', requestGeo);
+  $('btnGeo').addEventListener('click', requestGeo);
+  render();
+  loadReviews();
+  refreshLive(true);
+  setInterval(function () { refreshLive(true); }, CONFIG.refreshMs);
+  setInterval(renderClock, 1000);
+}
+boot();
+
+</script>
+</body>
+</html>
